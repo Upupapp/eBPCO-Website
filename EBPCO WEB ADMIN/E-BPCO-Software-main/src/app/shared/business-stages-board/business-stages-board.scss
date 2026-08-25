@@ -1,0 +1,1123 @@
+@use 'sass:color';
+@use '../styles/tokens' as *;
+@use '../styles/modal';
+
+// A note's minimum rendered height (name + business name + ID + permit
+// type, 4 lines, plus padding/gaps) — the ONE place this is defined.
+// `.stage-col-body`'s grid-row sizing, its reserved 3-row min-height, and
+// the loading skeleton all derive from this same value so none of them
+// can silently drift out of sync with the note's actual content again.
+$note-min-height: 132px;
+
+// `.card`/`.card-head` are copy-pasted per page throughout this codebase
+// (no shared partial to @use) — matched here to whatever dashboard.scss
+// declares so this pane reads as a native part of the dashboard.
+@keyframes section-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+:host {
+  display: block;
+}
+
+// Deliberately quieter than the dashboard's usual white `.card` — the
+// three stage columns below are the real visual surfaces here, so this
+// wrapper is just a faint tray (subtle tint, no shadow) that frames the
+// heading/filters without competing with them.
+.stages-card {
+  background: $color-bg-subtle;
+  border-radius: $radius-xl;
+  padding: 1.4rem 1.5rem 1.5rem;
+  border: 1px solid $color-border;
+  margin-bottom: 1.5rem;
+  animation: section-in 0.4s ease both;
+}
+
+.drop-error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: $radius-md;
+  background: $color-warning-bg-soft;
+  color: $color-warning;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+
+  span {
+    flex: 1;
+  }
+}
+
+.drop-error-dismiss {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0.1rem;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: $color-ink-900;
+}
+
+.stages-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.35rem;
+}
+
+.stages-subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $color-ink-500;
+}
+
+// Groups the filters and the Board/List toggle together on the header's
+// right side — the toggle sits last (the true right edge), so the filters
+// themselves end up shifted slightly left of where they used to sit
+// (flush against the card's own edge) instead of competing with it.
+.stages-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+// ---- Filters: permit stage + date range ---------------------------------
+
+.filters-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.filter-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.filter-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid $color-border-strong;
+  border-radius: $radius-md;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: $color-ink-700;
+  background: $color-surface;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    border-color $ease-base,
+    color $ease-base;
+
+  &:hover,
+  &.active {
+    border-color: $color-brand-600;
+    color: $color-brand-600;
+  }
+}
+
+.filter-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+}
+
+.filter-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 20;
+  min-width: 200px;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  box-shadow: $shadow-card-hover;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  animation: menu-in 0.15s ease both;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter-option {
+  text-align: left;
+  border: none;
+  background: transparent;
+  border-radius: $radius-sm;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: $color-ink-700;
+  cursor: pointer;
+  transition: background $ease-fast;
+
+  &:hover {
+    background: $color-bg-subtle;
+  }
+
+  &.active {
+    background: $color-brand-50;
+    color: $color-brand-600;
+  }
+}
+
+.custom-range {
+  border-top: 1px solid $color-border;
+  margin-top: 0.3rem;
+  padding: 0.6rem 0.5rem 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: $color-ink-500;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  input[type='date'] {
+    border: 1px solid $color-border-strong;
+    border-radius: $radius-sm;
+    padding: 0.4rem 0.55rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: $color-ink-700;
+    text-transform: none;
+    letter-spacing: normal;
+
+    &:focus-visible {
+      outline: none;
+      border-color: $color-brand-600;
+    }
+  }
+
+  // Fully self-contained (this component never @use's the shared
+  // data-table partial that normally styles `.btn-primary`, so that
+  // class name here was riding on unstyled browser button defaults —
+  // 1px padding, square corners, regular weight).
+  .apply-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.15rem;
+    border: none;
+    border-radius: $radius-md;
+    padding: 0.6rem 1rem;
+    background: $color-brand-600;
+    color: $color-surface;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(20, 20, 20, 0.06);
+    transition:
+      background $ease-base,
+      box-shadow $ease-base,
+      transform $ease-fast;
+
+    &:hover {
+      background: $color-brand-700;
+      box-shadow: 0 6px 14px rgba(200, 30, 44, 0.22);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-brand-focus-ring;
+      outline-offset: 2px;
+    }
+  }
+}
+
+// ---- Board / List display-mode toggle --------------------------------------
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid $color-border-strong;
+  border-radius: $radius-md;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  background: $color-surface;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: $color-ink-500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background $ease-base,
+    color $ease-base;
+
+  &:not(:last-child) {
+    border-right: 1px solid $color-border-strong;
+  }
+
+  &:hover {
+    color: $color-brand-600;
+  }
+
+  &.active {
+    background: $color-brand-50;
+    color: $color-brand-600;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-brand-focus-ring;
+    outline-offset: -2px;
+  }
+}
+
+// ---- List view --------------------------------------------------------------
+// A flat, scannable table of the exact same filtered applications the
+// board's columns show — for anyone who'd rather scan/search a list than
+// drag sticky notes. Fully self-contained (this component never @use's
+// the shared data-table partial — see the note above `.apply-btn`).
+
+.stages-list {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: $color-ink-100;
+    letter-spacing: 0.03em;
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid $color-border;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 0.8rem 0.75rem;
+    font-size: 0.85rem;
+    color: $color-ink-700;
+    border-bottom: 1px solid $color-border;
+    white-space: nowrap;
+  }
+
+  tbody tr.row-clickable {
+    cursor: pointer;
+    transition: background $ease-fast;
+
+    &:hover {
+      background: $color-surface;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-brand-focus-ring;
+      outline-offset: -2px;
+    }
+  }
+}
+
+.list-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.list-identity-name {
+  font-weight: 700;
+  color: $color-ink-900;
+}
+
+.list-identity-business {
+  font-size: 0.76rem;
+  color: $color-ink-300;
+}
+
+.muted {
+  color: $color-ink-300;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  border-radius: $radius-pill;
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+
+  &.under-review {
+    background: $color-warning-bg;
+    color: $color-warning;
+  }
+  &.approved {
+    background: $color-success-bg;
+    color: $color-success;
+  }
+  &.rejected {
+    background: $color-danger-bg;
+    color: $color-danger;
+  }
+}
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: $color-info-bg-soft;
+  color: $color-info;
+  transition: transform $ease-fast;
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.list-empty-row td {
+  text-align: center;
+  padding: 2.5rem 0.75rem;
+  color: $color-ink-300;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: normal;
+}
+
+// Mirrors the board's own per-column "View all N" footer button (same
+// shape/weight), but neutral/brand-colored rather than per-stage-tinted —
+// the List view spans every stage at once, so there's no single accent
+// color that would make sense here.
+.list-view-all {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  min-height: 40px;
+  margin-top: 0.75rem;
+  padding: 0 0.5rem;
+  border: none;
+  border-top: 1px dashed $color-border-strong;
+  border-radius: 0 0 $radius-sm $radius-sm;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $color-brand-600;
+  cursor: pointer;
+  transition: background $ease-fast;
+
+  span {
+    flex: 1;
+    text-align: center;
+  }
+
+  &:hover {
+    background: $color-brand-50;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-brand-focus-ring;
+    outline-offset: -2px;
+  }
+}
+
+// ---- Board ----------------------------------------------------------------
+// One accent per stage, mixed toward white for every pale surface below
+// (column tray, note paper, pin, fold, divider, footer) — a single source
+// of truth instead of scattering per-property hex/mix calls.
+$stage-colors: (
+  'under-review': $chart-warning,
+  'approved': $color-success,
+  'rejected': $color-danger,
+);
+
+.stages-board {
+  display: flex;
+  align-items: stretch;
+  gap: 1.1rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 0.2rem;
+}
+
+// A softly tinted document tray per stage — pale wash, fine matching
+// border, a faint inner highlight for a touch of paper depth. No drop
+// shadow: the columns are the primary surface, not a floating card.
+.stage-col {
+  flex: 1 1 0;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.95rem;
+  padding: 0.95rem 1rem 1rem;
+  background: $color-bg-subtle;
+  border: 1px solid $color-border;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  scroll-snap-align: start;
+
+  @each $name, $accent in $stage-colors {
+    &.#{$name} {
+      background: color.mix($accent, $color-surface, 7%);
+      border-color: color.mix($accent, $color-surface, 18%);
+    }
+  }
+}
+
+.stage-col-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.1rem;
+  margin-bottom: 0.7rem;
+}
+
+.stage-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  @each $name, $accent in $stage-colors {
+    &.#{$name} {
+      background: color.mix($accent, $color-surface, 22%);
+      color: color.mix($accent, black, 92%);
+    }
+  }
+}
+
+.stage-name {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: $color-ink-700;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+}
+
+.stage-count {
+  margin-left: auto;
+  font-size: 0.78rem;
+  font-weight: 800;
+  border-radius: $radius-pill;
+  padding: 0.15rem 0.6rem;
+  background: $color-surface;
+  font-variant-numeric: tabular-nums;
+
+  @each $name, $accent in $stage-colors {
+    &.#{$name} {
+      color: color.mix($accent, black, 88%);
+      border: 1px solid color.mix($accent, $color-surface, 32%);
+    }
+  }
+}
+
+// A short solid lead-in fading into a faint dashed continuation — a
+// refined document-board divider rather than a plain flat rule.
+.stage-divider {
+  height: 1px;
+  margin: 0 0 0.85rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 26px;
+    right: 0;
+    top: 0;
+    height: 1px;
+  }
+
+  @each $name, $accent in $stage-colors {
+    &.#{$name} {
+      background: linear-gradient(
+        to right,
+        color.mix($accent, $color-surface, 55%) 0 26px,
+        transparent 26px
+      );
+
+      &::after {
+        background-image: repeating-linear-gradient(
+          to right,
+          color.mix($accent, $color-surface, 32%) 0 3px,
+          transparent 3px 8px
+        );
+      }
+    }
+  }
+}
+
+// A predictable two-column, three-row grid, sized so a column always
+// reserves the same amount of space whether it holds six notes or none —
+// this, plus the footer's `margin-top: auto`, is what keeps every
+// column's footer bottom-aligned regardless of how many records it has.
+.stage-col-body {
+  position: relative;
+  display: grid;
+  // `minmax(0, 1fr)`, NOT plain `1fr` — a bare `1fr` track's minimum
+  // width still defaults to `auto`, i.e. the min-content size of
+  // whatever's inside it. A long unbroken token (a business name, an
+  // E-BPCO-2026-###### id, a permit type like "Sanitary / Plumbing")
+  // pushes that min-content size past the track's fair share of the
+  // column, so the GRID ITSELF grows wider than `.stage-col` and visibly
+  // bleeds into the next stage column — this is the actual bug, not a
+  // z-index/positioning issue, and box-sizing (`border-box` is already
+  // set globally in styles.scss) plays no part in it. `minmax(0, 1fr)`
+  // caps each track's minimum at 0, so the track is always sized from
+  // the *available* column width first and content is what has to wrap/
+  // ellipsis/shrink to fit — never the reverse.
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  // 132px (not the original 104px) — a note now carries 4 text lines
+  // (applicant/business/ID/permit type) instead of 3, so the reserved
+  // per-row height must match its real rendered height or a note visibly
+  // overlaps/crowds the row below it.
+  grid-auto-rows: minmax($note-min-height, auto);
+  gap: 1rem;
+  min-height: calc($note-min-height * 3 + 1rem * 2);
+  margin-bottom: 0.9rem;
+  border-radius: $radius-md;
+  transition: background $ease-base;
+
+  // A note from another column hovering over this one — a plain
+  // highlight rather than a color tied to the target stage, so it reads
+  // as "drop here" regardless of which of the three columns it is.
+  &.cdk-drop-list-receiving {
+    background: rgba($color-surface, 0.55);
+    outline: 2px dashed rgba($color-ink-900, 0.18);
+    outline-offset: 4px;
+  }
+}
+
+// Positioned over the body's reserved space (not just centered in its own
+// content height) so an empty column still occupies the full three-row
+// tray instead of collapsing.
+.stage-empty {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  color: $color-ink-300;
+
+  p {
+    margin: 0;
+    max-width: 210px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+}
+
+// ---- Pinned paper notes ----------------------------------------------
+// A restrained, tactile paper treatment: pale stage-tinted fill, a
+// centered dimensional pin, a folded lower-right corner, and a nearly
+// imperceptible deterministic tilt (see noteRotation() — never
+// Math.random(), so the board never reshuffles on re-render). No
+// handwritten font, no clip-art, no saturated color.
+
+.sticky-note {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  // A grid/flex item's default `min-width` is `auto` (= its content's
+  // min-content size), which is the OTHER half of the grid-blowout fix
+  // above — belt-and-suspenders with `.stage-col-body`'s
+  // `minmax(0, 1fr)` tracks, so this note can never be the thing forcing
+  // its own column wider than the space it was actually given.
+  min-width: 0;
+  width: 100%;
+  min-height: $note-min-height;
+  text-align: left;
+  box-sizing: border-box; // redundant with the global `*` reset in styles.scss — explicit here since width/padding math on this specific element is exactly what this fix depends on.
+  border: 1px solid rgba(20, 20, 20, 0.06);
+  border-radius: 5px;
+  padding: 0.7rem 0.75rem 0.7rem;
+  cursor: grab;
+  transform: rotate(var(--note-rotate, 0deg));
+  transition:
+    transform $ease-fast,
+    box-shadow $ease-base;
+  box-shadow:
+    0 1px 2px rgba(20, 20, 20, 0.05),
+    0 3px 8px rgba(20, 20, 20, 0.045);
+
+  // Folded-corner hint — a diagonal shade, not a literal cut-out shape —
+  // subtle enough to read as paper depth rather than a cartoon Post-it.
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px) rotate(0deg);
+    box-shadow:
+      0 2px 4px rgba(20, 20, 20, 0.07),
+      0 10px 18px rgba(20, 20, 20, 0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-brand-focus-ring;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    cursor: grabbing;
+    transform: translateY(-1px) rotate(0deg) scale(0.99);
+  }
+
+  @each $name, $accent in $stage-colors {
+    &.#{$name} {
+      background: color.mix($accent, $color-surface, 14%);
+
+      &::after {
+        background: linear-gradient(
+          135deg,
+          transparent 55%,
+          color.mix($accent, $color-surface, 34%) 55%
+        );
+      }
+
+      .note-pin {
+        background: radial-gradient(
+          circle at 34% 30%,
+          color.mix($accent, white, 55%),
+          $accent 62%,
+          color.mix($accent, black, 20%) 100%
+        );
+      }
+    }
+  }
+}
+
+// A small dimensional pin centered on the note's top edge — pure CSS, no
+// image asset. Decorative only (aria-hidden in the template), so it must
+// never intercept clicks/drags meant for the note itself.
+.note-pin {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  z-index: 1;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.28),
+    0 2px 3px rgba(0, 0, 0, 0.14);
+
+  // Tiny contact shadow the pin casts onto the paper below it.
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 9px;
+    width: 6px;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.16);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    filter: blur(0.5px);
+  }
+}
+
+// ---- Dragging a note between stages ----------------------------------
+// CDK clones the dragged element for `.cdk-drag-preview` (it keeps the
+// note's own classes/inline styles, including its pin, fold and tilt),
+// so it only needs a stronger "picked up" shadow and a slight lift.
+// The placeholder is the gap left behind in the source column.
+
+.cdk-drag-preview.sticky-note {
+  cursor: grabbing;
+  transform: scale(1.03) rotate(0deg);
+  box-shadow:
+    0 10px 20px rgba(20, 20, 20, 0.18),
+    0 22px 34px rgba(20, 20, 20, 0.2);
+}
+
+// A plain dashed paper-shaped outline in the gap left behind — the pin
+// and folded corner are decoration for a real note, not this stand-in.
+.cdk-drag-placeholder {
+  opacity: 0.35;
+  border: 1.5px dashed rgba($color-ink-900, 0.28) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+
+  &::after,
+  .note-pin {
+    display: none;
+  }
+}
+
+// `min-width: 0` on all four lines below — each is a flex child of the
+// column-flex `.sticky-note`; without it, a long unbroken string (a
+// business name, an E-BPCO-2026-###### id, "Sanitary / Plumbing") can
+// still assert its own min-content width as a floor even though
+// `overflow`/`text-overflow` are set, in some browsers/layout
+// combinations. Cheap, and removes any remaining doubt on top of the
+// grid-track fix above.
+
+.note-name {
+  min-width: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: $color-ink-900;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-business {
+  min-width: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba($color-ink-900, 0.68);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.note-id {
+  min-width: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba($color-ink-900, 0.52);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.note-type {
+  min-width: 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba($color-ink-900, 0.42);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ---- View all footer ---------------------------------------------------
+// Anchored to the bottom of the column via `margin-top: auto` — combined
+// with the body's reserved three-row height above, this is what keeps
+// every column's footer aligned regardless of note count.
+
+.view-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  min-height: 40px;
+  margin-top: auto;
+  padding: 0 0.5rem;
+  border: none;
+  border-top: 1px dashed transparent;
+  border-radius: 0 0 $radius-sm $radius-sm;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background $ease-fast,
+    color $ease-fast;
+
+  span {
+    flex: 1;
+    text-align: center;
+  }
+
+  @each $name, $accent in $stage-colors {
+    &.#{$name} {
+      color: color.mix($accent, $color-ink-900, 68%);
+      border-top-color: color.mix($accent, $color-surface, 32%);
+
+      &:hover {
+        background: color.mix($accent, $color-surface, 12%);
+      }
+    }
+  }
+}
+
+// ---- Board-level empty / error states -----------------------------------
+
+.stages-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 2.75rem 1rem;
+  text-align: center;
+  color: $color-ink-050;
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: $color-ink-500;
+  }
+}
+
+// ---- Loading skeleton -----------------------------------------------------
+// Mirrors the final layout exactly (same header/divider/2x3 grid/footer
+// proportions) so the pane doesn't jump in height once data arrives.
+
+.skel {
+  display: block;
+  border-radius: $radius-sm;
+  background: linear-gradient(90deg, $color-bg-muted 25%, $color-border 37%, $color-bg-muted 63%);
+  background-size: 400% 100%;
+  animation: skel-shimmer 1.4s ease infinite;
+}
+
+@keyframes skel-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skel-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+
+.skel-title {
+  width: 6.5rem;
+  height: 0.7rem;
+}
+
+.skel-count {
+  margin-left: auto;
+  width: 28px;
+  height: 18px;
+  border-radius: $radius-pill;
+}
+
+.skel-divider {
+  height: 1px;
+  margin: 0 0 0.85rem;
+  background: $color-border-strong;
+  animation: none;
+}
+
+.skel-footer {
+  height: 40px;
+  margin-top: 0.9rem;
+  border-radius: $radius-sm;
+}
+
+.stages-board.skeleton .stage-col-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  min-height: calc($note-min-height * 3 + 1rem * 2);
+  overflow: hidden;
+}
+
+.stages-board.skeleton .skel-note {
+  height: $note-min-height;
+  border-radius: 5px;
+}
+
+// ---- Responsive -------------------------------------------------------
+
+// Smaller desktop / tablet: columns keep a comfortable floor width and
+// scroll as a contained lane (never the whole page) rather than cramping
+// the two-note grid — `scroll-snap-align` on `.stage-col` above pairs
+// with this.
+@media (max-width: 1100px) {
+  .stage-col {
+    min-width: 270px;
+  }
+}
+
+@media (max-width: 640px) {
+  .stages-header-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .view-toggle {
+    width: 100%;
+  }
+
+  .view-toggle-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .filters-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-wrap {
+    width: 100%;
+  }
+
+  .filter-trigger {
+    width: 100%;
+    min-height: 44px;
+    justify-content: space-between;
+  }
+
+  .filter-menu {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+
+  // One column at a time, snapping to the viewport edge, filling nearly
+  // the full width — a contained horizontal lane rather than page-level
+  // scrolling or a cramped multi-column squeeze.
+  .stages-board {
+    scroll-snap-type: x mandatory;
+  }
+
+  .stage-col {
+    min-width: 86vw;
+    max-width: 92vw;
+  }
+
+  // Below this width, a 2-column note grid leaves each card too narrow
+  // to read comfortably (roughly 160px against a 4-line content stack) —
+  // fall back to one column per row. The reserved min-height switches
+  // from "3 rows of 2" to "6 rows of 1" to match, so the same 6-note
+  // preview still lands the footer at a predictable position instead of
+  // jumping around as notes are added/removed.
+  .stage-col-body {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: calc($note-min-height * 6 + 1rem * 5);
+  }
+
+  .view-all-btn {
+    min-height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stages-card,
+  .skel,
+  .sticky-note,
+  .view-all-btn,
+  .filter-trigger,
+  .stage-col-body,
+  .cdk-drag-preview.sticky-note {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+// ---- Reject prompt ----------------------------------------------------
+// Reuses the app's shared .modal-backdrop/.modal-box/.modal-actions/
+// .modal-btn primitives (see shared/styles/_modal.scss) — only the reason
+// textarea is specific to this board. Informational only: there is no
+// disabled state on the OK button, an empty reason still goes through.
+.reject-box {
+  text-align: left;
+}
+
+.reject-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $color-ink-500;
+
+  .optional {
+    font-weight: 500;
+    text-transform: none;
+    color: $color-ink-300;
+  }
+
+  textarea {
+    resize: vertical;
+    border: 1px solid $color-border-strong;
+    border-radius: $radius-sm;
+    padding: 0.6rem 0.7rem;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: $color-ink-700;
+
+    &:focus-visible {
+      outline: none;
+      border-color: $color-brand-600;
+    }
+  }
+}
