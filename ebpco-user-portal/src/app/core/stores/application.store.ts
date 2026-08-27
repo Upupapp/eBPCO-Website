@@ -110,6 +110,39 @@ export class ApplicationStore {
         { status: 'Ready for Release', timestamp: '2026-08-05T08:00:00.000Z', remarks: null },
       ],
     });
+    // app2's record already carries permitNumber/issuedDate/expiryDate and a
+    // Paid paymentStatus, but the Application Details page reads the permit
+    // and assessment CARDS from these separate maps, not those denormalized
+    // fields — without seeding them here those cards silently never render
+    // for this demo application, even though its own fields say it's done.
+    this.permitsByApp.set({
+      [app2.id]: {
+        applicationId: app2.id,
+        permitNumber: app2.permitNumber!,
+        issuedDateValue: new Date(app2.issuedDate!),
+        issuedDate: app2.issuedDate!,
+        expiryDateValue: new Date(app2.expiryDate!),
+        expiryDate: app2.expiryDate!,
+        approvingOfficial: 'Zoning Administrator',
+        approvingOffice: 'Municipal Planning and Development Office (MPDO / Zoning)',
+      },
+    });
+    this.assessmentsByApp.set({
+      [app2.id]: {
+        id: 'assess-seed-2',
+        applicationId: app2.id,
+        status: 'Paid',
+        lineItems: [
+          { code: 'ZON-001', name: 'Locational / Zoning Fee', family: 'Locational/Zoning Fee', authority: 'LGU', amountCentavos: 85000, legalBasisTitle: 'LGU Fee Schedule' },
+        ],
+        totalCentavos: 85000,
+        amountPaidCentavos: 85000,
+        balanceCentavos: 0,
+        opsNumber: 'OPS-2026-00231',
+        dueDate: '2026-08-01T00:00:00.000Z',
+        issuedAt: '2026-07-24T08:00:00.000Z',
+      },
+    });
   }
 
   readonly myApplications = computed(() => {

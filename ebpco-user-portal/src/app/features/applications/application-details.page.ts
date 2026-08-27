@@ -6,6 +6,7 @@ import { LIFECYCLE_SEQUENCE, applicantStatusOf, isTerminalStatus } from '../../c
 import { pesos } from '../../core/domain/assessment.model';
 import { formatDate, formatDateTime } from '../../core/utils/ids';
 import { ToastService } from '../../shared/ui/toast.service';
+import { permitFormAssetFor } from '../../core/domain/permit-form-assets';
 
 @Component({
   selector: 'app-application-details',
@@ -48,7 +49,13 @@ import { ToastService } from '../../shared/ui/toast.service';
                 <tr><td class="muted">Approving Office</td><td>{{ p.approvingOffice }}</td></tr>
               </tbody>
             </table>
-            <button class="btn btn-primary btn-sm" style="margin-top:10px;" (click)="download(p.permitNumber)">Download Permit</button>
+            <div style="display:flex; gap:8px; align-items:center; margin-top:10px; flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" (click)="download(p.permitNumber)">Download Permit</button>
+              <a class="btn btn-secondary btn-sm" [href]="formAsset().fileName" target="_blank" rel="noopener">Preview Permit Form</a>
+            </div>
+            <p class="small muted" style="margin-top:8px; margin-bottom:0;">
+              "Preview Permit Form" opens the official {{ formAsset().label }}{{ formAsset().isFallback ? ' (no dedicated Castilla form for this permit type yet, showing the generic Unified Application Form)' : '' }} — a blank reference form, not your personalized issued permit.
+            </p>
           </div>
         }
 
@@ -140,6 +147,10 @@ export class ApplicationDetailsPage {
 
   permit() {
     return this.store.permitFor(this.id());
+  }
+
+  formAsset() {
+    return permitFormAssetFor(this.app()!.permitType);
   }
 
   timeline() {
