@@ -86,10 +86,10 @@ type Step = 1 | 2 | 3;
           </div>
           <div class="field"><label>Confirm Password*</label><input class="input" type="password" [(ngModel)]="confirmPassword" /></div>
           <label class="checkbox-row" style="margin-bottom:8px;">
-            <input type="checkbox" [(ngModel)]="acceptedTerms" /> I agree to the Terms &amp; Conditions
+            <input type="checkbox" [(ngModel)]="acceptedTerms" /> I agree to the <a routerLink="/terms">Terms &amp; Conditions</a>
           </label>
           <label class="checkbox-row" style="margin-bottom:14px;">
-            <input type="checkbox" [(ngModel)]="acceptedPrivacy" /> I agree to the Privacy Policy
+            <input type="checkbox" [(ngModel)]="acceptedPrivacy" /> I agree to the <a routerLink="/privacy">Privacy Policy</a>
           </label>
           @if (error()) { <div class="field error">{{ error() }}</div> }
           <div style="display:flex; gap:10px;">

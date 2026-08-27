@@ -31,6 +31,8 @@ import { departmentName } from './department.model';
 import { PaymentConfigStore } from './payment-config-store';
 import { AssessmentStore } from './assessment-store';
 import { CollectingAgency } from './payment.model';
+import { TechnicalDataStore } from './technical-data-store';
+import { PermitRevocationStatus } from './permit.model';
 
 /**
  * Single in-memory source of truth for applications and every record
@@ -50,6 +52,7 @@ import { CollectingAgency } from './payment.model';
 export class ApplicationStore {
   private readonly paymentConfig = inject(PaymentConfigStore);
   private readonly assessmentStore = inject(AssessmentStore);
+  private readonly technicalDataStore = inject(TechnicalDataStore);
   private readonly seed = buildSeed();
 
   private readonly _applications = signal<ApplicationRecord[]>(this.seed.applications);
@@ -168,6 +171,22 @@ export class ApplicationStore {
     return this._permits().find((p) => p.applicationId === applicationId);
   }
 
+  /** Looks up a permit by its own real, backend-generated permit number — the lookup VerifyPermit's public route uses, since the permit number itself doubles as its public verification token (see docs on VerifyPermit). */
+  getPermitByNumber(permitNumber: string): GeneratedPermit | undefined {
+    return this._permits().find((p) => p.permitNumber === permitNumber);
+  }
+
+  /** Suspend/revoke/reinstate an already-generated permit — a narrow, optional admin capability (see ACTION_PERMISSIONS.revokePermit). Never affects permit-number assignment or reopens the application's own lifecycle. */
+  setPermitRevocationStatus(applicationId: string, status: PermitRevocationStatus, actor: string, role: string): boolean {
+    const permit = this.getPermit(applicationId);
+    if (!permit) return false;
+    this._permits.update((rows) =>
+      rows.map((p) => (p.applicationId === applicationId ? { ...p, revocationStatus: status } : p)),
+    );
+    this.appAudit(actor, role, applicationId, `Permit ${permit.permitNumber} marked ${status}`);
+    return true;
+  }
+
   getRelease(applicationId: string): PermitReleaseRecord | undefined {
     return this._releases().find((r) => r.applicationId === applicationId);
   }
@@ -182,7 +201,7 @@ export class ApplicationStore {
    * a circular injection), so merging happens here instead.
    */
   getAuditTrail(applicationId: string): AuditEvent[] {
-    return [...this._auditEvents(), ...this.assessmentStore.auditEvents()]
+    return [...this._auditEvents(), ...this.assessmentStore.auditEvents(), ...this.technicalDataStore.auditEvents()]
       .filter((e) => e.applicationId === applicationId)
       .sort((a, b) => a.timestampValue.getTime() - b.timestampValue.getTime());
   }
@@ -1080,6 +1099,7 @@ export class ApplicationStore {
         : null,
       approvingOfficial: actor,
       approvingOffice: departmentName(req.responsibleDepartmentId),
+      revocationStatus: 'Active',
     };
     this._permits.update((rows) => [...rows, permit]);
     this.transitionStatus(applicationId, 'Permit Generated', actor, role);

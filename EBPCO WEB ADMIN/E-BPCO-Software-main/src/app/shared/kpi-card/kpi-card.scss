@@ -1,4 +1,5 @@
 @use '../styles/tokens' as *;
+@use '../styles/motion' as *;
 
 :host {
   display: block;
@@ -215,6 +216,14 @@
   color: $color-ink-900;
   font-variant-numeric: tabular-nums;
   word-break: break-word;
+
+  // The count-up directive adds this class once to its own span, the
+  // instant the animated number lands on its real value — a brief
+  // "landed" pulse, not a decorative loop.
+  .count-up-landed {
+    display: inline-block;
+    animation: count-pop $dur-fast $ease-emphasis;
+  }
 }
 
 .kpi-unit {

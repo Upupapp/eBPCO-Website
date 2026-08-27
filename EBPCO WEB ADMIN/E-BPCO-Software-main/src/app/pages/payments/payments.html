@@ -298,6 +298,9 @@
                           placeholder="Requires assessor input"
                           (change)="setLineAmount(a.id, line, $any($event.target).value)"
                         />
+                        @for (hint of technicalDataHints(a.applicationId, line); track hint) {
+                          <div class="technical-data-hint">{{ hint }}</div>
+                        }
                       } @else {
                         {{ formatPHP(line.amountCentavos) }}
                       }

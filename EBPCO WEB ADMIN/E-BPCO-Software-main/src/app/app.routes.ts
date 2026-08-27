@@ -19,6 +19,17 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./pages/register/register').then((m) => m.Register),
   },
+  // Public, no-login permit verification — the destination the QR block on
+  // every generated permit points to. Deliberately outside the
+  // authGuard-protected shell below.
+  {
+    path: 'verify/:permitNumber',
+    loadComponent: () => import('./pages/verify-permit/verify-permit').then((m) => m.VerifyPermit),
+  },
+  {
+    path: 'verify',
+    loadComponent: () => import('./pages/verify-permit/verify-permit').then((m) => m.VerifyPermit),
+  },
 
   // One authenticated shell, one sidebar, canonical resource-identifying
   // URLs — no `/tenant` prefix. Every child is guarded: no session -> back

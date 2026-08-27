@@ -28,6 +28,8 @@ import {
   DocumentPreview,
   SampleDocumentKind,
 } from '../../shared/document-preview/document-preview';
+import { GeneratedPermitDocumentModal } from '../../shared/generated-document/generated-permit-document-modal';
+import { TechnicalDataForm } from '../../shared/technical-data-form/technical-data-form';
 import {
   ApplicationDocument,
   DocumentStatus,
@@ -56,7 +58,7 @@ interface DocumentRow {
 }
 
 type View = 'list' | 'detail' | 'info' | 'not-found';
-type DetailTab = 'timeline' | 'documents' | 'permit' | 'comments';
+type DetailTab = 'timeline' | 'documents' | 'permit' | 'technical-data' | 'comments';
 type InfoSection = 'meta' | 'project' | 'type' | 'govid' | 'professional' | 'ownership';
 
 interface RingStat {
@@ -75,6 +77,12 @@ interface PreviewDoc {
   label: string;
   filename: string;
   status: string;
+  /** The document's real internal record id — shown as an honest "Internal Reference No." rather than a fabricated document number. */
+  id: string;
+  /** Real upload timestamp — never a hardcoded placeholder date. */
+  uploadedAt: string;
+  issuingOffice: string | null;
+  issueDate: string | null;
 }
 
 interface LifecycleStep {
@@ -124,6 +132,8 @@ const STATUS_ACTIONS: { label: string; target: ApplicationLifecycleStatus }[] = 
     ConfirmDialog,
     ApplicationIntake,
     DocumentPreview,
+    GeneratedPermitDocumentModal,
+    TechnicalDataForm,
     OverlayModule,
   ],
   templateUrl: './applications.html',
@@ -142,6 +152,11 @@ export class Applications {
   protected readonly canVerifyContact = computed(() => {
     const role = this.session.role();
     return role ? ACTION_PERMISSIONS.verifyContact(role) : false;
+  });
+
+  protected readonly canEditTechnicalData = computed(() => {
+    const role = this.session.role();
+    return !!role && ACTION_PERMISSIONS.editTechnicalData(role);
   });
 
   // Bound to the optional :id route segment (see app.routes.ts) via
@@ -508,7 +523,18 @@ export class Applications {
   // ---- Sample document preview (application form / permit / etc.) -----
 
   protected readonly showDocPreview = signal(false);
-  protected readonly docPreviewKind = signal<SampleDocumentKind>('permit');
+  protected readonly docPreviewKind = signal<SampleDocumentKind>('official-receipt');
+
+  // ---- Generated permit document (real, config-driven — see shared/generated-document/) ----
+  protected readonly showGeneratedDocument = signal(false);
+
+  protected openGeneratedDocumentModal(): void {
+    this.showGeneratedDocument.set(true);
+  }
+
+  protected closeGeneratedDocumentModal(): void {
+    this.showGeneratedDocument.set(false);
+  }
 
   // ---- Contact verification (manual administrator confirmation only) ----
   // The only verification path this frontend-only mock can honestly
@@ -1082,7 +1108,15 @@ export class Applications {
 
   protected previewDocumentRow(r: DocumentRow): void {
     if (!r.doc) return;
-    this.previewItem.set({ label: r.label, filename: r.doc.fileName, status: r.doc.status });
+    this.previewItem.set({
+      label: r.label,
+      filename: r.doc.fileName,
+      status: r.doc.status,
+      id: r.doc.id,
+      uploadedAt: r.doc.uploadedAt,
+      issuingOffice: r.doc.issuingOffice,
+      issueDate: r.doc.issueDate,
+    });
   }
 
   // ---- Comments tab -------------------------------------------------------

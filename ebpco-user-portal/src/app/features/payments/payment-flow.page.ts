@@ -45,7 +45,7 @@ import { ToastService } from '../../shared/ui/toast.service';
               </div>
             } @else {
               <div class="card" style="background:var(--secondary-50);">
-                <p class="small" style="margin:0;">Pay directly at the Business Permit and Clearance Office counter. Bring a copy of your Order of Payment.</p>
+                <p class="small" style="margin:0;">Pay directly at the Building Permit and Certificate of Occupancy Office counter. Bring a copy of your Order of Payment.</p>
               </div>
             }
 

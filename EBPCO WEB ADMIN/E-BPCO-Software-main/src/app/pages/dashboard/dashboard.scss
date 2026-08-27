@@ -3,6 +3,7 @@
 @use '../../shared/styles/modal';
 @use '../../shared/styles/kpi-grid';
 @use '../../shared/styles/tokens' as *;
+@use '../../shared/styles/motion' as *;
 
 @keyframes section-in {
   from {
@@ -17,6 +18,7 @@
 
 :host {
   display: block;
+  animation: page-in $dur-page $ease-entrance both;
 }
 
 .card {
@@ -25,7 +27,30 @@
   padding: 1.5rem 1.6rem;
   border: 1px solid $color-border;
   margin-bottom: 1.5rem;
-  animation: section-in 0.4s ease both;
+  animation: section-in $dur-slow $ease-entrance both;
+}
+
+// Top-level sections cascade in on load rather than popping together —
+// each direct `.card`/`section` child of the page gets a small incremental
+// delay, capped low enough that the whole dashboard settles well under a
+// second regardless of how many cards it renders.
+:host > section {
+  animation-delay: calc(#{$dur-stagger-step} * 2);
+}
+:host > section:nth-of-type(1) {
+  animation-delay: 0s;
+}
+:host > section:nth-of-type(2) {
+  animation-delay: calc(#{$dur-stagger-step} * 3);
+}
+:host > section:nth-of-type(3) {
+  animation-delay: calc(#{$dur-stagger-step} * 6);
+}
+:host > section:nth-of-type(4) {
+  animation-delay: calc(#{$dur-stagger-step} * 9);
+}
+:host > section:nth-of-type(5) {
+  animation-delay: calc(#{$dur-stagger-step} * 12);
 }
 
 h2 {
@@ -257,10 +282,17 @@ h2 {
 .stage-row-fill {
   display: block;
   height: 100%;
+  width: 100%;
   min-width: 2px;
   border-radius: 999px;
   background: $color-info;
-  transition: width $ease-base;
+  transform-origin: left;
+  // A settle, not a UI toggle — this bar's width represents a share of a
+  // real total, so it gets the hero-scale duration/easing rather than the
+  // fast utility default. `transform: scaleX()` instead of animating
+  // `width` keeps this GPU-composited, matching every other new animation
+  // in this pass.
+  transition: transform $dur-slow $ease-settle;
 }
 
 .stage-empty-state {

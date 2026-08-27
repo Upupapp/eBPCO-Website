@@ -1,0 +1,28 @@
+<section class="doc-generated-section">
+  <h2>Project</h2>
+  <dl class="doc-generated-fields">
+    <div>
+      <dt>Transaction</dt>
+      <dd>{{ display(applicationAction(), pending) }}</dd>
+    </div>
+    <div>
+      <dt>Date Applied</dt>
+      <dd>{{ display(dateSubmitted(), pending) }}</dd>
+    </div>
+    <div>
+      <dt>Total Floor Area</dt>
+      <dd [class.doc-generated-placeholder]="common()?.floorAreaSqm == null">{{ displayNumber(common()?.floorAreaSqm, 'sqm', pending) }}</dd>
+    </div>
+    <div>
+      <dt>Building Footprint</dt>
+      <dd [class.doc-generated-placeholder]="common()?.buildingFootprintSqm == null">{{ displayNumber(common()?.buildingFootprintSqm, 'sqm', pending) }}</dd>
+    </div>
+    <div>
+      <dt>Estimated Project Cost</dt>
+      <dd [class.doc-generated-placeholder]="common()?.projectCostCentavos == null">{{ formatPHP(common()?.projectCostCentavos) }}</dd>
+    </div>
+  </dl>
+  @if (common()?.scopeOfWorkDescription) {
+    <p class="doc-generated-note"><strong>Scope of Work:</strong> {{ common()?.scopeOfWorkDescription }}</p>
+  }
+</section>

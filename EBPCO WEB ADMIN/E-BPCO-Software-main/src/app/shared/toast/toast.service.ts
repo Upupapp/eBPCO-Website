@@ -8,6 +8,8 @@ export interface ToastMessage {
   text: string;
 }
 
+const EXIT_DURATION_MS = 200;
+
 /**
  * The one place a page reports "that action just succeeded" or "that
  * action just failed" to the user — every mutating action across this app
@@ -23,6 +25,13 @@ export interface ToastMessage {
 export class ToastService {
   private readonly _toasts = signal<ToastMessage[]>([]);
   readonly toasts = this._toasts.asReadonly();
+
+  // Ids currently playing their exit animation — still in `toasts()` so
+  // the template can render `.leaving`, but no longer "live" as far as
+  // `dismiss` callers are concerned.
+  private readonly _leaving = signal<ReadonlySet<number>>(new Set());
+  readonly leaving = this._leaving.asReadonly();
+
   private nextId = 1;
 
   success(text: string): void {
@@ -38,7 +47,17 @@ export class ToastService {
   }
 
   dismiss(id: number): void {
-    this._toasts.update((list) => list.filter((t) => t.id !== id));
+    if (this._leaving().has(id)) return;
+    this._leaving.update((s) => new Set(s).add(id));
+    const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : EXIT_DURATION_MS;
+    setTimeout(() => {
+      this._toasts.update((list) => list.filter((t) => t.id !== id));
+      this._leaving.update((s) => {
+        const next = new Set(s);
+        next.delete(id);
+        return next;
+      });
+    }, duration);
   }
 
   private push(tone: ToastTone, text: string): void {

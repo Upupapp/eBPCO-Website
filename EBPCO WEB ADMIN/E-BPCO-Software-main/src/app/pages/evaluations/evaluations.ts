@@ -250,11 +250,23 @@ export class Evaluations {
     label: string;
     filename: string;
     status: string;
+    id: string;
+    uploadedAt: string;
+    issuingOffice: string | null;
+    issueDate: string | null;
   } | null>(null);
 
   protected openDocPreview(r: RecordDocumentRow): void {
     if (!r.doc) return;
-    this.previewItem.set({ label: r.label, filename: r.doc.fileName, status: r.doc.status });
+    this.previewItem.set({
+      label: r.label,
+      filename: r.doc.fileName,
+      status: r.doc.status,
+      id: r.doc.id,
+      uploadedAt: r.doc.uploadedAt,
+      issuingOffice: r.doc.issuingOffice,
+      issueDate: r.doc.issueDate,
+    });
   }
 
   protected closeDocPreview(): void {

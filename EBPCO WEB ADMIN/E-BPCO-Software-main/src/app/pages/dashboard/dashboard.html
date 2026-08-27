@@ -96,7 +96,7 @@
                   >
                 </span>
                 <span class="stage-row-track">
-                  <span class="stage-row-fill" [style.width.%]="row.pct"></span>
+                  <span class="stage-row-fill" [style.transform]="'scaleX(' + row.pct / 100 + ')'"></span>
                 </span>
               </button>
             </li>
@@ -261,11 +261,12 @@
           </tr>
         </thead>
         <tbody>
-          @for (row of filteredApplications(); track row.id) {
+          @for (row of filteredApplications(); track row.id; let i = $index) {
             <tr
               class="row-clickable"
               tabindex="0"
               role="button"
+              [style.--row-index]="i"
               [attr.aria-label]="'View application ' + row.id + ' for ' + row.applicant"
               (click)="openDetail(row)"
               (keydown.enter)="openDetail(row)"

@@ -1,6 +1,6 @@
 # 10 Motion
 
-Version: 1.0.0
+Version: 1.1.0
 Status: Approved
 Document Owner: UI/UX Team
 
@@ -46,6 +46,20 @@ Motion should be:
 - Non-blocking
 
 Animations should communicate intent rather than decoration.
+
+---
+
+# Maximalist Motion Exception (Angular Web Admin Portal)
+
+As of version 1.1.0 (2026-08-27), the Angular Web Administration Portal deliberately runs a denser, more expressive motion treatment across all of its screens — not only the brand/auth moments this document otherwise reserves richer motion for. This was requested and approved by the Web Admin UI Lead (michaela@lguids.com.ph) under this document's own Governance rule that new animation patterns require UI/UX Team review before implementation; this section is that review record.
+
+Scope: this exception applies **only** to the Angular Web Administration Portal. The Flutter Mobile Application continues to follow the restrained motion system described in the rest of this document, unchanged.
+
+What the exception does **not** relax:
+
+- The "Hardcoded Animations" rule below still applies in full — every duration, easing curve, and keyframe used anywhere in the Admin Portal routes through the centralized tokens in `shared/styles/_motion.scss`, extended for this pass with: `$dur-stagger-step`, `$dur-count-up`, `$dur-chart-draw`, `$dur-page` (durations), `$ease-emphasis`, `$ease-draw` (easings), and shared keyframes `stagger-in`, `skeleton-shimmer`, `pill-swap`, `count-pop`.
+- The Accessibility section's reduced-motion requirements remain in full force, with no Admin Portal carve-out — every new animation is still caught by the app-wide `prefers-reduced-motion` kill-switch, and the two JS-timed additions (KPI count-up, chart draw-in) each check the media query directly and render their final state instantly when motion is reduced.
+- Motion must still be purposeful, not decorative — see the corresponding note added to `01-Brand-Guidelines/19-Do-and-Dont.md`.
 
 ---
 
@@ -123,6 +137,8 @@ Recommended transitions:
 - Fade + Slide (where appropriate)
 
 Complex transitions are discouraged.
+
+The Angular Web Admin Portal implements page transitions via a plain CSS `animation` on each routed page's own host element (no `@angular/animations`, no View Transitions API) — a small `page-in` mount keyframe layered on top of each page's existing entrance animation. This satisfies the "Fade + Slide" pattern above without introducing a second animation system into a codebase that is otherwise 100% hand-rolled CSS.
 
 ---
 
@@ -320,7 +336,7 @@ New animation patterns require UI/UX Team review before implementation.
 
 Project
 
-Electronic Business Permit and Clearance Office (eBPCO)
+Electronic Building Permit and Certificate of Occupancy (eBPCO)
 
 Platforms
 
@@ -333,4 +349,4 @@ Approved
 
 Version
 
-1.0.0
+1.1.0

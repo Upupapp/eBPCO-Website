@@ -1,0 +1,13 @@
+@if (references().length > 0) {
+  <section class="doc-generated-section">
+    <h2>Related Approvals</h2>
+    <dl class="doc-generated-fields">
+      @for (r of references(); track r.label) {
+        <div>
+          <dt>{{ r.label }}</dt>
+          <dd [class.doc-generated-placeholder]="!r.value">{{ display(r.value, notAvailable) }}</dd>
+        </div>
+      }
+    </dl>
+  </section>
+}

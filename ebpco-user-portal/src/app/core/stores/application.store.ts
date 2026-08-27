@@ -177,6 +177,24 @@ export class ApplicationStore {
     return this.permitsByApp()[applicationId];
   }
 
+  /** Looks up a permit by its own real, system-generated permit number — the permit number itself doubles as the public verification token (see VerifyPermitPage). */
+  permitByNumber(permitNumber: string): GeneratedPermit | undefined {
+    return Object.values(this.permitsByApp()).find((p) => p.permitNumber === permitNumber);
+  }
+
+  /** True once every REQUIRED document for this application's permit type is on file in a resolved state (never Missing/Rejected/Revision Required/Expired) — the same real "documents resolved" check the generated permit document's draft-watermark gate reads. */
+  documentsResolvedFor(applicationId: string): boolean {
+    const app = this.applicationById(applicationId);
+    if (!app || app.permitType === 'General Business Permit') return true;
+    const required = requirementsFor(app.permitType).documents.filter((d) => d.required);
+    const docs = this.documentsFor(applicationId);
+    const unresolved: DocumentStatus[] = ['Missing', 'Rejected', 'Revision Required', 'Expired'];
+    return required.every((req) => {
+      const doc = docs.find((d) => d.requirementId === req.id);
+      return !!doc && !unresolved.includes(doc.status);
+    });
+  }
+
   nextStepText(status: ApplicationLifecycleStatus): string {
     return NEXT_STEP_TEXT[status];
   }

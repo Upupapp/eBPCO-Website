@@ -1,8 +1,10 @@
 @use '../../shared/styles/auth-form';
+@use '../../shared/styles/motion' as *;
 
 :host {
   display: block;
   width: 100%;
+  animation: page-in $dur-page $ease-entrance both;
 }
 
 .forgot-note {

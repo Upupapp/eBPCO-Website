@@ -1,14 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/session/auth.service';
 import { defaultNotificationPreferences } from '../../core/domain/user.model';
+import { TERMS_CONDITIONS_TEXT, PRIVACY_POLICY_TEXT } from '../../core/domain/legal-copy';
 import { ToastService } from '../../shared/ui/toast.service';
 
 type Tab = 'profile' | 'password' | 'notifications' | 'legal';
 
 @Component({
   selector: 'app-profile',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   template: `
     @if (auth.currentUser(); as u) {
       <div class="page">
@@ -75,9 +77,11 @@ type Tab = 'profile' | 'password' | 'notifications' | 'legal';
         @if (tab() === 'legal') {
           <div class="card" style="max-width:600px;">
             <h4>Terms &amp; Conditions</h4>
-            <p class="small muted">By using eBPCO, you agree to provide accurate information for every permit application and to comply with all applicable national and local regulations, including PD 1096 (National Building Code) and RA 9514 (Fire Code of the Philippines).</p>
-            <h4>Privacy Policy</h4>
-            <p class="small muted">Your personal data is collected solely to process your permit applications and is handled in accordance with the Philippine Data Privacy Act (RA 10173). Your data is never shared with another applicant's account.</p>
+            <p class="small muted">{{ termsText }}</p>
+            <a routerLink="/terms" class="small">Read full Terms &amp; Conditions</a>
+            <h4 style="margin-top:16px;">Privacy Policy</h4>
+            <p class="small muted">{{ privacyText }}</p>
+            <a routerLink="/privacy" class="small">Read full Privacy Policy</a>
           </div>
         }
       </div>
@@ -90,6 +94,8 @@ export class ProfilePage {
 
   readonly tab = signal<Tab>('profile');
   readonly passwordError = signal<string | null>(null);
+  readonly termsText = TERMS_CONDITIONS_TEXT;
+  readonly privacyText = PRIVACY_POLICY_TEXT;
 
   private u = this.auth.currentUser()!;
   firstName = this.u.firstName;

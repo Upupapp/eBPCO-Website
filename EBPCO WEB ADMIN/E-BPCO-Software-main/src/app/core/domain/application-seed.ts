@@ -532,6 +532,7 @@ function buildApplicationBundle(
         : null,
       approvingOfficial: officer,
       approvingOffice,
+      revocationStatus: 'Active',
     });
     ctx.auditEvents.push({
       id: `AUD-${id}-permit`,

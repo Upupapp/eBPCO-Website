@@ -1,0 +1,43 @@
+@use '../styles/_generated-document' as *;
+
+:host {
+  display: block;
+}
+
+.permit-number-block {
+  border: 1px solid $doc-border;
+  padding: 0.5rem 0.75rem;
+  margin: 0 0 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-family: $doc-font-sans;
+}
+
+.permit-number-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.permit-number-label {
+  font-size: 8.5pt;
+  color: $doc-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.permit-number-value {
+  font-size: 12pt;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.permit-number-dates {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 8.5pt;
+  color: $doc-muted;
+}

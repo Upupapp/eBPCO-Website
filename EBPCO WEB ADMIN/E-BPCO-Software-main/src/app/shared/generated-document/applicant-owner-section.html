@@ -1,0 +1,29 @@
+<section class="doc-generated-section">
+  <h2>Owner / Applicant</h2>
+  <dl class="doc-generated-fields">
+    <div>
+      <dt>Owner / Permittee Name</dt>
+      <dd>{{ display(applicantNameOverride() || applicantName(), notAvailable) }}</dd>
+    </div>
+    <div>
+      <dt>Business / Project</dt>
+      <dd>{{ display(businessLabel(), notAvailable) }}</dd>
+    </div>
+    <div>
+      <dt>TIN</dt>
+      <dd [class.doc-generated-placeholder]="!ownerTin()">{{ display(ownerTin(), notOnFile) }}</dd>
+    </div>
+    <div>
+      <dt>Contact Number</dt>
+      <dd>{{ display(applicant()?.mobileNumber, notAvailable) }}</dd>
+    </div>
+    <div>
+      <dt>Address</dt>
+      <dd>{{ display(applicant()?.addressLine, notAvailable) }}</dd>
+    </div>
+    <div>
+      <dt>Barangay</dt>
+      <dd>{{ display(applicant()?.barangay, notAvailable) }}</dd>
+    </div>
+  </dl>
+</section>

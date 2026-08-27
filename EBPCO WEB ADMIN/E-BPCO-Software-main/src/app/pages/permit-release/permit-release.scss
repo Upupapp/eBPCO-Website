@@ -4,6 +4,7 @@
 @use '../../shared/styles/detail-view';
 @use '../../shared/styles/tabs';
 @use '../../shared/styles/tokens' as *;
+@use '../../shared/styles/motion' as *;
 
 .modal-hint {
   margin: -0.5rem 0 1rem;
@@ -31,6 +32,7 @@
 
 :host {
   display: block;
+  animation: page-in $dur-page $ease-entrance both;
 }
 
 .card {

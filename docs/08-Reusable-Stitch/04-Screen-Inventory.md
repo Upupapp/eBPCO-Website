@@ -49,12 +49,17 @@ Each screen belongs to one reusable stitch.
 
 | Screen ID | Screen Name | Stitch | Platforms |
 |------------|-------------|---------|-----------|
-| PUB-001 | Splash Screen | Authentication Stitch | Mobile |
-| PUB-002 | Landing Page | Authentication Stitch | Web |
-| PUB-003 | Login | Authentication Stitch | Web / Mobile |
-| PUB-004 | Register Account | Authentication Stitch | Web / Mobile |
-| PUB-005 | Forgot Password | Authentication Stitch | Web / Mobile |
-| PUB-006 | Reset Password | Authentication Stitch | Web / Mobile |
+| PUB-001 | Splash Screen | Authentication Stitch | Web / Mobile |
+| PUB-002 | Onboarding Carousel | Authentication Stitch | Web / Mobile |
+| PUB-003 | Landing Page | Authentication Stitch | Web |
+| PUB-004 | Login | Authentication Stitch | Web / Mobile |
+| PUB-005 | Register Account | Authentication Stitch | Web / Mobile |
+| PUB-006 | Forgot Password | Authentication Stitch | Web / Mobile |
+| PUB-007 | Reset Password | Authentication Stitch | Web / Mobile |
+| PUB-008 | Terms & Conditions | Authentication Stitch | Web |
+| PUB-009 | Privacy Policy | Authentication Stitch | Web |
+| PUB-010 | 404 / Not Found | Authentication Stitch | Web |
+| PUB-011 | How It Works | Authentication Stitch | Web |
 
 ---
 

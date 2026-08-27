@@ -453,6 +453,14 @@
         <button
           type="button"
           class="tab-pill"
+          [class.active]="detailTab() === 'technical-data'"
+          (click)="selectDetailTab('technical-data')"
+        >
+          Technical Details
+        </button>
+        <button
+          type="button"
+          class="tab-pill"
           [class.active]="detailTab() === 'comments'"
           (click)="selectDetailTab('comments')"
         >
@@ -800,7 +808,7 @@
                   <button
                     type="button"
                     class="btn-primary"
-                    (click)="openDocumentPreviewModal('permit')"
+                    (click)="openGeneratedDocumentModal()"
                   >
                     <app-icon name="file-check" [size]="14" />
                     Preview / Download {{ finalDocumentName() }}
@@ -844,6 +852,18 @@
                 }
               </div>
             }
+          }
+
+          @case ('technical-data') {
+            <h2>Technical Details</h2>
+            <p class="tab-note">
+              Structured project/technical facts the generated permit document prints — verified
+              here by staff, not taken from an uploaded PDF.
+            </p>
+            <app-technical-data-form
+              [applicationId]="detail.row.id"
+              [permitType]="detail.row.permitType"
+            />
           }
 
           @case ('comments') {
@@ -1183,12 +1203,22 @@
         <h3>{{ doc.label }}</h3>
 
         <div class="sheet-row">
-          <span>Document No.</span><strong>DOC-{{ doc.filename.length }}2026</strong>
+          <span>Internal Reference No.</span><strong>{{ doc.id }}</strong>
         </div>
-        <div class="sheet-row"><span>Date Uploaded</span><strong>Apr 14, 2021</strong></div>
+        <div class="sheet-row"><span>Date Uploaded</span><strong>{{ doc.uploadedAt }}</strong></div>
         <div class="sheet-row">
           <span>File Name</span><strong>{{ doc.filename }}</strong>
         </div>
+        @if (doc.issuingOffice) {
+          <div class="sheet-row">
+            <span>Issuing Office</span><strong>{{ doc.issuingOffice }}</strong>
+          </div>
+        }
+        @if (doc.issueDate) {
+          <div class="sheet-row">
+            <span>Issue Date</span><strong>{{ doc.issueDate }}</strong>
+          </div>
+        }
 
         <div class="sheet-lines">
           <span></span>
@@ -1222,6 +1252,13 @@
     [applicationId]="row.id"
     [kind]="docPreviewKind()"
     (closed)="closeDocumentPreviewModal()"
+  />
+}
+
+@if (showGeneratedDocument() && selectedRow(); as row) {
+  <app-generated-permit-document-modal
+    [applicationId]="row.id"
+    (closed)="closeGeneratedDocumentModal()"
   />
 }
 

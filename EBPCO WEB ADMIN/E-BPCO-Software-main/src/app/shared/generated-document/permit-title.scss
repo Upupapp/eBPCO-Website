@@ -1,0 +1,28 @@
+@use '../styles/_generated-document' as *;
+
+:host {
+  display: block;
+}
+
+.permit-title-block {
+  text-align: center;
+  margin: 0.4rem 0 0.9rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 15pt;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: $doc-ink;
+}
+
+.permit-subtitle {
+  margin: 0.15rem 0 0;
+  font-family: $doc-font-sans;
+  font-size: 9.5pt;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: $doc-muted;
+}

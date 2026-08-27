@@ -5,8 +5,6 @@ import { StatusPillComponent } from '../../shared/ui/status-pill.component';
 import { LIFECYCLE_SEQUENCE, applicantStatusOf, isTerminalStatus } from '../../core/domain/status.model';
 import { pesos } from '../../core/domain/assessment.model';
 import { formatDate, formatDateTime } from '../../core/utils/ids';
-import { ToastService } from '../../shared/ui/toast.service';
-import { permitFormAssetFor } from '../../core/domain/permit-form-assets';
 
 @Component({
   selector: 'app-application-details',
@@ -50,12 +48,8 @@ import { permitFormAssetFor } from '../../core/domain/permit-form-assets';
               </tbody>
             </table>
             <div style="display:flex; gap:8px; align-items:center; margin-top:10px; flex-wrap:wrap;">
-              <button class="btn btn-primary btn-sm" (click)="download(p.permitNumber)">Download Permit</button>
-              <a class="btn btn-secondary btn-sm" [href]="formAsset().fileName" target="_blank" rel="noopener">Preview Permit Form</a>
+              <a class="btn btn-primary btn-sm" [routerLink]="['/applications', a.id, 'permit']">Preview Permit</a>
             </div>
-            <p class="small muted" style="margin-top:8px; margin-bottom:0;">
-              "Preview Permit Form" opens the official {{ formAsset().label }}{{ formAsset().isFallback ? ' (no dedicated Castilla form for this permit type yet, showing the generic Unified Application Form)' : '' }} — a blank reference form, not your personalized issued permit.
-            </p>
           </div>
         }
 
@@ -122,7 +116,6 @@ import { permitFormAssetFor } from '../../core/domain/permit-form-assets';
 export class ApplicationDetailsPage {
   private readonly route = inject(ActivatedRoute);
   protected readonly store = inject(ApplicationStore);
-  private readonly toast = inject(ToastService);
 
   protected readonly applicantStatusOf = applicantStatusOf;
   protected readonly formatDate = formatDate;
@@ -149,10 +142,6 @@ export class ApplicationDetailsPage {
     return this.store.permitFor(this.id());
   }
 
-  formAsset() {
-    return permitFormAssetFor(this.app()!.permitType);
-  }
-
   timeline() {
     return this.store.timelineFor(this.id());
   }
@@ -169,9 +158,5 @@ export class ApplicationDetailsPage {
 
   advance(id: string): void {
     this.store.advanceForDemo(id);
-  }
-
-  download(permitNumber: string): void {
-    this.toast.success(`Permit ${permitNumber} download would start here once document generation is wired to a backend.`);
   }
 }

@@ -1,0 +1,178 @@
+<div class="tdf-status-bar">
+  <span class="tdf-badge" [class.verified]="draft().status === 'Verified'">{{ draft().status }}</span>
+  @if (draft().status === 'Verified') {
+    <span class="tdf-meta">Verified by {{ draft().verifiedBy }} on {{ draft().verifiedAt }}</span>
+  } @else {
+    <span class="tdf-meta">Last updated {{ draft().updatedAt }}</span>
+  }
+</div>
+
+@if (missingFields().length > 0) {
+  <div class="tdf-missing">
+    <strong>Cannot verify — missing required fields:</strong>
+    <ul>
+      @for (path of missingFields(); track path) {
+        <li>{{ fieldLabel(path) }}</li>
+      }
+    </ul>
+  </div>
+}
+
+<fieldset [disabled]="!canEdit()">
+  <div class="tdf-section">
+    <h3>Owner / Property</h3>
+    <div class="tdf-grid">
+      <label>Owner TIN
+        <input class="input" [ngModel]="draft().common.ownerTin" (ngModelChange)="setCommon('ownerTin', $event || null)" />
+      </label>
+      <label>Contractor
+        <input class="input" [ngModel]="draft().common.contractor" (ngModelChange)="setCommon('contractor', $event || null)" />
+      </label>
+      <label>PCAB License No.
+        <input class="input" [ngModel]="draft().common.pcabLicenseNo" (ngModelChange)="setCommon('pcabLicenseNo', $event || null)" />
+      </label>
+      <label>TCT / OCT / CCT No.
+        <input class="input" [ngModel]="draft().common.lot.octTctNumber" (ngModelChange)="setLot('octTctNumber', $event)" />
+      </label>
+      <label>Tax Declaration No.
+        <input class="input" [ngModel]="draft().common.lot.taxDeclarationNumber" (ngModelChange)="setLot('taxDeclarationNumber', $event)" />
+      </label>
+      <label>Survey Plan No.
+        <input class="input" [ngModel]="draft().common.lot.surveyPlanNumber" (ngModelChange)="setLot('surveyPlanNumber', $event)" />
+      </label>
+      <label>Lot Area (sqm)
+        <input class="input" type="number" [ngModel]="draft().common.lot.lotAreaSqm" (ngModelChange)="setLotAreaSqm($event)" />
+      </label>
+      <label>Total Floor Area (sqm)
+        <input class="input" type="number" [ngModel]="draft().common.floorAreaSqm" (ngModelChange)="setCommon('floorAreaSqm', toNumberOrNull($event))" />
+      </label>
+      <label>Building Footprint (sqm)
+        <input class="input" type="number" [ngModel]="draft().common.buildingFootprintSqm" (ngModelChange)="setCommon('buildingFootprintSqm', toNumberOrNull($event))" />
+      </label>
+      <label>Estimated Project Cost (PHP)
+        <input class="input" type="number" [ngModel]="draft().common.projectCostCentavos ? draft().common.projectCostCentavos! / 100 : null" (ngModelChange)="setProjectCostFromPesos($event)" />
+      </label>
+    </div>
+    <label class="tdf-full">Scope of Work
+      <textarea class="input" rows="2" [ngModel]="draft().common.scopeOfWorkDescription" (ngModelChange)="setCommon('scopeOfWorkDescription', $event || null)"></textarea>
+    </label>
+  </div>
+
+  @if (config().requiredRelatedApprovals.length > 0) {
+    <div class="tdf-section">
+      <h3>Related Approvals</h3>
+      <p class="tdf-hint">Manually entered as they become known from other processes (e.g. BFP's FSEC workflow) — not automatically linked.</p>
+      <div class="tdf-grid">
+        @for (key of config().requiredRelatedApprovals; track key) {
+          <label>{{ relatedApprovalLabel(key) }}
+            <input class="input" [ngModel]="draft().common.relatedApprovals[key]" (ngModelChange)="setRelatedApproval(key, $event)" />
+          </label>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="tdf-section">
+    <h3>Professionals of Record</h3>
+    @if (draft().common.professionals.length > 0) {
+      <table class="tdf-table">
+        <thead><tr><th>Role</th><th>Name</th><th>PRC No.</th><th>PTR No.</th><th></th></tr></thead>
+        <tbody>
+          @for (p of draft().common.professionals; track p.id) {
+            <tr>
+              <td>{{ p.role }}</td>
+              <td>{{ p.fullName }}</td>
+              <td>{{ p.prcNumber ?? '—' }}</td>
+              <td>{{ p.ptrNumber ?? '—' }}</td>
+              <td><button type="button" class="btn-outline" (click)="removeProfessional(p.id)">Remove</button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    <div class="tdf-add-row">
+      <input class="input" placeholder="Role (e.g. Architect)" [ngModel]="newProfessional().role" (ngModelChange)="newProfessional.set({ ...newProfessional(), role: $event })" />
+      <input class="input" placeholder="Full Name" [ngModel]="newProfessional().fullName" (ngModelChange)="newProfessional.set({ ...newProfessional(), fullName: $event })" />
+      <input class="input" placeholder="PRC No." [ngModel]="newProfessional().prcNumber" (ngModelChange)="newProfessional.set({ ...newProfessional(), prcNumber: $event })" />
+      <input class="input" placeholder="PTR No." [ngModel]="newProfessional().ptrNumber" (ngModelChange)="newProfessional.set({ ...newProfessional(), ptrNumber: $event })" />
+      <button type="button" class="btn-primary" (click)="addProfessional()">Add</button>
+    </div>
+  </div>
+
+  @if (config().technicalFields.length > 0) {
+    <div class="tdf-section">
+      <h3>Technical Details</h3>
+      <div class="tdf-grid">
+        @for (field of config().technicalFields; track field.id) {
+          <label>
+            {{ field.label }} @if (field.unit) { <span class="tdf-unit">({{ field.unit }})</span> }
+            @switch (field.type) {
+              @case ('number') {
+                <input class="input" type="number" [ngModel]="fieldValue(field)" (ngModelChange)="setFieldValue(field, $event)" />
+              }
+              @case ('date') {
+                <input class="input" type="date" [ngModel]="fieldValue(field)" (ngModelChange)="setFieldValue(field, $event)" />
+              }
+              @case ('boolean') {
+                <select class="input" [ngModel]="fieldValue(field)" (ngModelChange)="setFieldValue(field, $event)">
+                  <option [ngValue]="null">Not set</option>
+                  <option [ngValue]="true">Yes</option>
+                  <option [ngValue]="false">No</option>
+                </select>
+              }
+              @case ('select') {
+                <select class="input" [ngModel]="fieldValue(field)" (ngModelChange)="setFieldValue(field, $event)">
+                  <option [ngValue]="null">Select…</option>
+                  @for (opt of field.options; track opt) {
+                    <option [ngValue]="opt">{{ opt }}</option>
+                  }
+                </select>
+              }
+              @default {
+                <input class="input" [ngModel]="fieldValue(field)" (ngModelChange)="setFieldValue(field, $event)" />
+              }
+            }
+          </label>
+        }
+      </div>
+    </div>
+  }
+
+  @if (config().equipmentTable; as eq) {
+    <div class="tdf-section">
+      <h3>{{ eq.title }}</h3>
+      @if (equipmentRows().length > 0) {
+        <table class="tdf-table">
+          <thead><tr><th>Description</th><th>Qty</th><th>Rating</th><th>Location</th><th></th></tr></thead>
+          <tbody>
+            @for (row of equipmentRows(); track row.id) {
+              <tr>
+                <td>{{ row.description }}</td>
+                <td>{{ row.quantity ?? '—' }}</td>
+                <td>{{ row.rating ?? '—' }}</td>
+                <td>{{ row.location ?? '—' }}</td>
+                <td><button type="button" class="btn-outline" (click)="removeEquipmentRow(row.id)">Remove</button></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      <div class="tdf-add-row">
+        <input class="input" placeholder="Description" [ngModel]="newEquipmentRow().description" (ngModelChange)="newEquipmentRow.set({ ...newEquipmentRow(), description: $event })" />
+        <input class="input" placeholder="Qty" type="number" [ngModel]="newEquipmentRow().quantity" (ngModelChange)="newEquipmentRow.set({ ...newEquipmentRow(), quantity: $event })" />
+        <input class="input" placeholder="Rating" [ngModel]="newEquipmentRow().rating" (ngModelChange)="newEquipmentRow.set({ ...newEquipmentRow(), rating: $event })" />
+        <input class="input" placeholder="Location" [ngModel]="newEquipmentRow().location" (ngModelChange)="newEquipmentRow.set({ ...newEquipmentRow(), location: $event })" />
+        <button type="button" class="btn-primary" (click)="addEquipmentRow()">Add</button>
+      </div>
+    </div>
+  }
+</fieldset>
+
+@if (canEdit()) {
+  <div class="tdf-actions">
+    <button type="button" class="btn-outline" (click)="save()">Save</button>
+    @if (canVerify()) {
+      <button type="button" class="btn-primary" (click)="verify()">Mark Verified</button>
+    }
+  </div>
+}

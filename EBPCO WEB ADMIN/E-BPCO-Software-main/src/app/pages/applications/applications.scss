@@ -3,6 +3,7 @@
 @use '../../shared/styles/modal';
 @use '../../shared/styles/menu-popover';
 @use '../../shared/styles/tokens' as *;
+@use '../../shared/styles/motion' as *;
 
 @keyframes section-in {
   from {
@@ -17,6 +18,7 @@
 
 :host {
   display: block;
+  animation: page-in $dur-page $ease-entrance both;
 }
 
 .card {

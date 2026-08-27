@@ -4,6 +4,7 @@
 @use '../../shared/styles/modal';
 @use '../../shared/styles/kpi-grid';
 @use '../../shared/styles/tokens' as *;
+@use '../../shared/styles/motion' as *;
 
 .prototype-disclaimer {
   display: flex;
@@ -38,6 +39,7 @@
 
 :host {
   display: block;
+  animation: page-in $dur-page $ease-entrance both;
 }
 
 .card {

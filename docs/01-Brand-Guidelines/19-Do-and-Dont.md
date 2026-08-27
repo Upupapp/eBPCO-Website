@@ -1,6 +1,6 @@
 # 19 Do and Don't
 
-Version: 1.0.0
+Version: 1.1.0
 Status: Approved
 Document Owner: UI/UX Team
 
@@ -223,6 +223,8 @@ When making design decisions, always choose:
 - Overanimate components.
 - Use flashing effects.
 
+**Exception — Angular Web Admin Portal:** per the approved Maximalist Motion Exception (see `02-Design-System/10-Motion.md`), this platform intentionally uses denser, more visible motion than the baseline rule above — staggered reveals, count-up numbers, chart draw-ins, a kinetic headline treatment on brand screens. This exception is scoped to the Angular Web Admin Portal only; the "keep animations subtle" / "avoid decorative animations" rules above remain the default for every other eBPCO surface, and even within the Admin Portal's exception, every animation must still be traceable to a specific usability purpose — confirming an action, guiding attention, or communicating a state change. Purely ornamental motion is still out of scope, exception or not.
+
 ---
 
 # Component Creation
@@ -294,7 +296,7 @@ Any violation must be corrected before implementation is approved.
 
 Project
 
-Electronic Business Permit and Clearance Office (eBPCO)
+Electronic Building Permit and Certificate of Occupancy (eBPCO)
 
 Platforms
 
@@ -307,4 +309,4 @@ Approved
 
 Version
 
-1.0.0
+1.1.0

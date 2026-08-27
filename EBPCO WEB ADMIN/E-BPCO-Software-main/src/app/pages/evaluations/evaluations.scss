@@ -4,6 +4,7 @@
 @use '../../shared/styles/menu-popover';
 @use '../../shared/styles/modal';
 @use '../../shared/styles/tokens' as *;
+@use '../../shared/styles/motion' as *;
 
 // ---- Record view: real Documents / Timeline / Actions -----------------
 
@@ -212,6 +213,7 @@
 
 :host {
   display: block;
+  animation: page-in $dur-page $ease-entrance both;
 }
 
 .page-heading {

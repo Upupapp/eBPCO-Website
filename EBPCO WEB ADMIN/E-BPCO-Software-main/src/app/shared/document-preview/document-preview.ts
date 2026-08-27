@@ -1,18 +1,21 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApplicationStore } from '../../core/domain/application-store';
 import { AssessmentStore } from '../../core/domain/assessment-store';
 import { requirementsFor } from '../../core/domain/requirements-catalog';
 import { departmentName } from '../../core/domain/department.model';
-import { permitFormUrl, permitChecklistUrl } from '../../core/domain/permit-form-templates';
 
+// The 'permit' kind used to live here (either an embedded blank PDF or a
+// generic HTML sheet) — it's been replaced entirely by
+// shared/generated-document/ (see GeneratedPermitDocument), a real,
+// config-driven document built from structured application data. This
+// component still owns the other five kinds, which already read live
+// store data honestly.
 export type SampleDocumentKind =
   | 'application-form'
   | 'assessment'
   | 'evaluation-notice'
   | 'official-receipt'
-  | 'permit'
   | 'release-form';
 
 const KIND_TITLES: Record<SampleDocumentKind, string> = {
@@ -20,7 +23,6 @@ const KIND_TITLES: Record<SampleDocumentKind, string> = {
   assessment: 'Order of Payment / Assessment Form',
   'evaluation-notice': 'Evaluation Notice',
   'official-receipt': 'Official Receipt',
-  permit: 'Permit / Clearance',
   'release-form': 'Release Form',
 };
 
@@ -97,7 +99,6 @@ function amountInWords(centavos: number): string {
 export class DocumentPreview {
   private readonly store = inject(ApplicationStore);
   private readonly assessmentStore = inject(AssessmentStore);
-  private readonly sanitizer = inject(DomSanitizer);
 
   readonly applicationId = input.required<string>();
   readonly kind = input.required<SampleDocumentKind>();
@@ -123,21 +124,6 @@ export class DocumentPreview {
   protected readonly requirements = computed(() => {
     const row = this.row();
     return row ? requirementsFor(row.permitType) : null;
-  });
-  protected readonly permit = computed(() => this.store.getPermit(this.applicationId()));
-  /** The official permit form PDF for this application's permit type, bundled under public/assets/permits/. Null when no matching file was provided for that permit type. */
-  protected readonly permitFormUrl = computed(() => {
-    const row = this.row();
-    return row ? permitFormUrl(row.permitType) : null;
-  });
-  protected readonly permitFormSafeUrl = computed<SafeResourceUrl | null>(() => {
-    const url = this.permitFormUrl();
-    return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : null;
-  });
-  /** The real Castilla OBO documentary-requirements checklist for this application's permit type, when it applies (Building Permit family + Certificate of Occupancy). Plain URL, not sanitized as a resource — opened as a normal link, not embedded in an iframe. */
-  protected readonly permitChecklistUrl = computed(() => {
-    const row = this.row();
-    return row ? permitChecklistUrl(row.permitType) : null;
   });
   protected readonly release = computed(() => this.store.getRelease(this.applicationId()));
 

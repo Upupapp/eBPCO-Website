@@ -161,4 +161,12 @@ export const ACTION_PERMISSIONS = {
   /** Editing a permit type's required-document checklist (Permit Release > Permit Types). Anyone who can reach Permit Release may VIEW it; only these roles may add/edit/remove a document. */
   configureRequirements: (role: StaffRole): boolean =>
     role === 'Super Admin' || role === 'Administrator',
+  /** Entering/editing an application's structured technical data (the fields the generated permit document prints). Same tier as evaluation work. */
+  editTechnicalData: (role: StaffRole): boolean =>
+    role === 'Super Admin' || role === 'Administrator' || role === 'Evaluator',
+  /** Marking a technical-data record Verified — a reviewer sign-off distinct from drafting/editing it, mirrored on approveAssessment's own split. */
+  verifyTechnicalData: (role: StaffRole): boolean =>
+    role === 'Super Admin' || role === 'Administrator' || role === 'Approving Officer',
+  /** Suspending/revoking an already-issued permit — narrow and sensitive, admin-only. */
+  revokePermit: (role: StaffRole): boolean => role === 'Super Admin' || role === 'Administrator',
 };

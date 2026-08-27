@@ -332,11 +332,17 @@
     <div class="modal-backdrop" (click)="closeModal()">
       <div class="modal-box" (click)="$event.stopPropagation()">
         <button type="button" class="modal-close" (click)="closeModal()">&#10005;</button>
-        <span class="modal-icon"><app-icon name="sparkles" [size]="34" /></span>
-        <h2>PDF GENERATED SUCCESSFULLY</h2>
+        <span class="modal-icon"><app-icon name="file-check" [size]="34" /></span>
+        <h2>Permit Generated</h2>
+        @if (generateTarget(); as target) {
+          <button type="button" class="print-btn" (click)="closeModal(); previewPermit(target)">
+            <app-icon name="file-check" [size]="17" />
+            View Generated Permit
+          </button>
+        }
         <button type="button" class="print-btn" (click)="printPdf()">
           <app-icon name="printer" [size]="17" />
-          Print PDF
+          Print Release Summary
         </button>
       </div>
     </div>
@@ -379,9 +385,8 @@
   </div>
 
   @if (previewTarget(); as target) {
-    <app-document-preview
+    <app-generated-permit-document-modal
       [applicationId]="target.id"
-      kind="permit"
       (closed)="closePermitPreview()"
     />
   }

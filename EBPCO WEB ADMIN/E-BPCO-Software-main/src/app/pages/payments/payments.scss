@@ -4,6 +4,14 @@
 @use '../../shared/styles/detail-view';
 @use '../../shared/styles/tabs';
 @use '../../shared/styles/tokens' as *;
+@use '../../shared/styles/motion' as *;
+
+.technical-data-hint {
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  color: $color-ink-300;
+  font-style: italic;
+}
 
 // ---------------------------------------------------------------------------
 // Layout notes for this file:
@@ -34,6 +42,7 @@
 
 :host {
   display: block;
+  animation: page-in $dur-page $ease-entrance both;
 }
 
 * {

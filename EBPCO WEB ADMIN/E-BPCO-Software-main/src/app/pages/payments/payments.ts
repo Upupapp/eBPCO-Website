@@ -31,8 +31,10 @@ import {
   PaymentTransaction,
   PaymentTransactionStatus,
 } from '../../core/domain/payment.model';
-import { FeeApplicability, FeeRule } from '../../core/domain/fee-rule.model';
+import { FeeApplicability, FeeRule, feeRuleById } from '../../core/domain/fee-rule.model';
 import { DocumentPreview } from '../../shared/document-preview/document-preview';
+import { TechnicalDataStore } from '../../core/domain/technical-data-store';
+import { ApplicationTechnicalData } from '../../core/domain/technical-data.model';
 
 type PaymentsTab = 'assessments' | 'transactions' | 'matrix' | 'configuration';
 type ConfigSubTab = 'fee-rules' | 'payment-methods' | 'bank-information' | 'payroll';
@@ -40,6 +42,52 @@ type ConfigSubTab = 'fee-rules' | 'payment-methods' | 'bank-information' | 'payr
 function formatPHP(centavos: number | null): string {
   if (centavos === null) return 'Requires assessor input';
   return `₱${(centavos / 100).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+/**
+ * Read-only assessor context, not an auto-filled amount — a fee rule's
+ * `requiredInputs` names a raw technical quantity (e.g. floor area), never
+ * the peso amount itself, so this only ever informs the assessor's manual
+ * entry rather than presuming to compute it for them. Only maps input keys
+ * that have a genuine, unambiguous counterpart in ApplicationTechnicalData;
+ * every other key (e.g. 'buildingPermitFeeCentavos', a percentage-of-another-
+ * fee input) is intentionally left unmapped rather than guessed.
+ */
+function technicalDataHintFor(inputKey: string, data: ApplicationTechnicalData): string | null {
+  switch (inputKey) {
+    case 'floorAreaSqm':
+      return data.common.floorAreaSqm != null ? `Floor area on file: ${data.common.floorAreaSqm} sqm` : null;
+    case 'constructionCostCentavos':
+      return data.common.projectCostCentavos != null
+        ? `Project cost on file: ${formatPHP(data.common.projectCostCentavos)}`
+        : null;
+    case 'connectedLoadKva':
+      return data.families.electrical?.totalConnectedLoadKva != null
+        ? `Connected load on file: ${data.families.electrical.totalConnectedLoadKva} kVA`
+        : null;
+    case 'fixtureCount': {
+      const count = (data.families.plumbing?.fixtures.length ?? 0) + (data.families.sanitary ? 1 : 0);
+      return count > 0 ? `Fixtures on file: ${data.families.plumbing?.fixtures.length ?? 0}` : null;
+    }
+    case 'deviceCount':
+      return data.families.electronics?.systems.length
+        ? `Devices on file: ${data.families.electronics.systems.length}`
+        : null;
+    case 'lengthLinearMeters':
+      return data.families.fencing?.totalLengthMeters != null
+        ? `Fence length on file: ${data.families.fencing.totalLengthMeters} m`
+        : null;
+    case 'signAreaSqm':
+      return data.families.sign?.totalSignAreaSqm != null
+        ? `Sign area on file: ${data.families.sign.totalSignAreaSqm} sqm`
+        : null;
+    case 'volumeCubicMeters':
+      return data.families.excavation?.estimatedVolumeCubicMeters != null
+        ? `Excavation volume on file: ${data.families.excavation.estimatedVolumeCubicMeters} cu.m`
+        : null;
+    default:
+      return null;
+  }
 }
 
 function statusClass(status: string): string {
@@ -84,6 +132,7 @@ interface TransactionRow {
 export class Payments {
   private readonly store = inject(ApplicationStore);
   protected readonly assessmentStore = inject(AssessmentStore);
+  private readonly technicalDataStore = inject(TechnicalDataStore);
   protected readonly paymentConfig = inject(PaymentConfigStore);
   protected readonly payrollStore = inject(PayrollStore);
   private readonly session = inject(SessionService);
@@ -317,6 +366,16 @@ export class Payments {
       case 'manual':
         return 'Manual assessment';
     }
+  }
+
+  /** Read-only technical-data context for a line's manual-entry field (e.g. "Floor area on file: 186.50 sqm") — see technicalDataHintFor's own doc comment for why this never auto-fills the amount itself. */
+  protected technicalDataHints(applicationId: string, line: AssessmentLineItem): string[] {
+    const rule = feeRuleById(line.feeRuleId);
+    if (!rule || rule.requiredInputs.length === 0) return [];
+    const data = this.technicalDataStore.getFor(applicationId);
+    return rule.requiredInputs
+      .map((key) => technicalDataHintFor(key, data))
+      .filter((hint): hint is string => hint !== null);
   }
 
   // ---- Draft editing (line amounts / inclusion / due date) ----------------

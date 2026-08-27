@@ -11,10 +11,13 @@ import { RouterLink } from '@angular/router';
           <img src="logo.png" alt="eBPCO" style="width:34px; height:34px; object-fit:contain;" />
           <strong style="font-size:16px;">eBPCO User Portal</strong>
         </div>
-        <div style="display:flex; gap:10px;">
-          <a routerLink="/login" class="btn btn-secondary">Log In</a>
-          <a routerLink="/register" class="btn btn-primary">Register</a>
-        </div>
+        <nav style="display:flex; align-items:center; gap:20px;">
+          <a routerLink="/how-it-works" class="small" style="font-weight:600;">How It Works</a>
+          <div style="display:flex; gap:10px;">
+            <a routerLink="/login" class="btn btn-secondary">Log In</a>
+            <a routerLink="/register" class="btn btn-primary">Register</a>
+          </div>
+        </nav>
       </header>
       <div class="accent-bar"></div>
 
@@ -25,9 +28,12 @@ import { RouterLink } from '@angular/router';
             Register your business, submit permit applications, upload requirements, pay assessed fees,
             and track every application — all in one place, in parity with the eBPCO mobile app.
           </p>
-          <div style="display:flex; gap:12px; justify-content:center; margin-bottom:40px;">
+          <div style="display:flex; gap:12px; justify-content:center; margin-bottom:16px;">
             <a routerLink="/register" class="btn btn-primary">Get Started</a>
             <a routerLink="/login" class="btn btn-secondary">I already have an account</a>
+          </div>
+          <div style="margin-bottom:40px;">
+            <a routerLink="/how-it-works" class="small">See how the process works &rarr;</a>
           </div>
           <div class="grid grid-fixed-3">
             <div class="card card-accent-primary">

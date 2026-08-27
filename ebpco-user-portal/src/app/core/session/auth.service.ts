@@ -34,15 +34,15 @@ export interface RegisterSecurityInfo {
   password: string;
 }
 
-const STORAGE_KEY = 'ebpco-user-portal.session';
-
 /**
  * Mock authentication — there is no backend anywhere in the eBPCO system
  * yet (see master command Section 15, Open Decision #3). This mirrors the
- * existing convention in both ebpco-mobile's MockAuthRepository and the
- * Admin Portal's SessionService: a real, working UI flow against an
- * in-memory/localStorage-backed store, structured so a genuine HTTP-backed
- * AuthService can replace this one without touching call sites.
+ * existing convention in ebpco-mobile's MockAuthRepository: a real,
+ * working UI flow against an in-memory store, structured so a genuine
+ * HTTP-backed AuthService can replace this one without touching call
+ * sites. Deliberately in-memory only, not persisted to localStorage — a
+ * page refresh always logs out, by design, rather than silently keeping a
+ * "signed in" state alive across reloads.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -59,7 +59,6 @@ export class AuthService {
 
   constructor() {
     this.seedDemoAccount();
-    this.restoreSession();
   }
 
   private seedDemoAccount(): void {
@@ -93,26 +92,6 @@ export class AuthService {
     });
   }
 
-  private restoreSession(): void {
-    try {
-      const savedId = localStorage.getItem(STORAGE_KEY);
-      if (savedId && this.accounts.has(savedId)) {
-        this.currentUserId.set(savedId);
-      }
-    } catch {
-      // localStorage unavailable (private browsing, etc.) — stay logged out.
-    }
-  }
-
-  private persistSession(id: string | null): void {
-    try {
-      if (id) localStorage.setItem(STORAGE_KEY, id);
-      else localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // Ignore — session still works for this tab via the in-memory signal.
-    }
-  }
-
   login(emailOrMobile: string, password: string): { ok: true } | { ok: false; error: string } {
     const match = [...this.accounts.values()].find(
       (entry) =>
@@ -122,7 +101,6 @@ export class AuthService {
     );
     if (!match) return { ok: false, error: 'Incorrect email/mobile number or password.' };
     this.currentUserId.set(match.account.id);
-    this.persistSession(match.account.id);
     return { ok: true };
   }
 
@@ -167,7 +145,6 @@ export class AuthService {
 
   logout(): void {
     this.currentUserId.set(null);
-    this.persistSession(null);
   }
 
   updateProfile(patch: Partial<Pick<UserAccount, 'firstName' | 'middleName' | 'lastName' | 'mobileNumber' | 'address' | 'barangay' | 'city' | 'province' | 'zipCode'>>): void {

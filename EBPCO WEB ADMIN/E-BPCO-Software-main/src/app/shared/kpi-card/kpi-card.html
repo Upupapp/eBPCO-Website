@@ -22,8 +22,7 @@
     <div class="kpi-text">
       <p class="kpi-label" [id]="labelId">{{ label() }}</p>
       <p class="kpi-value" [attr.aria-describedby]="labelId">
-        {{ value() }}
-        @if (unit()) {
+        <span [appCountUp]="value()"></span>&nbsp;@if (unit()) {
           <span class="kpi-unit">{{ unit() }}</span>
         }
       </p>
@@ -693,8 +692,7 @@
     <div class="kpi-text">
       <p class="kpi-label" [id]="labelId">{{ label() }}</p>
       <p class="kpi-value" [attr.aria-describedby]="labelId">
-        {{ value() }}
-        @if (unit()) {
+        <span [appCountUp]="value()"></span>&nbsp;@if (unit()) {
           <span class="kpi-unit">{{ unit() }}</span>
         }
       </p>

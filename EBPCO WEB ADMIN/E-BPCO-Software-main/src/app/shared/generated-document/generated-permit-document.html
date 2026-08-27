@@ -1,0 +1,86 @@
+@if (row(); as row) {
+  @if (config(); as config) {
+    <article class="doc-generated-page">
+      <app-draft-watermark [text]="watermarkText()" />
+
+      @for (key of config.sections; track key) {
+        @switch (key) {
+          @case ('officialHeader') {
+            <app-official-document-header
+              [agencyHeader]="config.agencyHeader"
+              [documentControlNo]="row.id"
+              [generatedOn]="generatedOn"
+            />
+          }
+          @case ('permitTitle') {
+            <app-permit-title [title]="config.documentTitle" [subtitle]="config.documentSubtitle ?? null" />
+          }
+          @case ('permitNumber') {
+            <app-permit-number-block
+              [permitNumber]="permit()?.permitNumber ?? null"
+              [issuedDate]="permit()?.issuedDate ?? null"
+              [expiryDate]="permit()?.expiryDate ?? null"
+            />
+          }
+          @case ('applicantOwner') {
+            <app-applicant-owner-section
+              [applicantName]="row.applicant"
+              [applicant]="applicant()"
+              [businessLabel]="businessLabel()"
+              [ownerTin]="technicalData().common.ownerTin"
+              [applicantNameOverride]="technicalData().common.applicantNameOverride"
+            />
+          }
+          @case ('property') {
+            <app-property-section [location]="row.location" [lot]="technicalData().common.lot" />
+          }
+          @case ('project') {
+            <app-project-section
+              [common]="technicalData().common"
+              [applicationAction]="row.applicationAction"
+              [dateSubmitted]="row.dateSubmitted"
+            />
+          }
+          @case ('technicalSummary') {
+            <app-technical-summary-section [fields]="config.technicalFields" [technicalData]="technicalData()" />
+          }
+          @case ('equipmentTable') {
+            @if (config.equipmentTable; as eq) {
+              <app-equipment-table [title]="eq.title" [columns]="eq.columns" [rows]="equipmentRows()" />
+            }
+          }
+          @case ('professional') {
+            <app-professional-section [professionals]="technicalData().common.professionals" />
+          }
+          @case ('relatedPermits') {
+            <app-related-permit-section [references]="relatedApprovalRows()" />
+          }
+          @case ('assessment') {
+            <app-assessment-section [assessment]="assessment()" />
+          }
+          @case ('conditions') {
+            <app-conditions-section
+              [conditions]="requirements()?.inspectionRequirements ?? null"
+              [validityRules]="requirements()?.validityRules ?? null"
+            />
+          }
+          @case ('approvalSignature') {
+            <app-approval-signature-section
+              [signatory]="signatory()"
+              [approvingOfficial]="permit()?.approvingOfficial ?? null"
+              [approvingOffice]="permit()?.approvingOffice ?? null"
+            />
+          }
+          @case ('qr') {
+            <app-qr-verification-block [verificationUrl]="verificationUrl()" />
+          }
+          @case ('footer') {
+            <app-document-footer [documentRef]="row.id" [generatedOn]="generatedOn" pageLabel="Page 1 of 1" />
+          }
+        }
+      }
+    </article>
+  }
+} @else {
+  <p class="doc-generated-note">Application not found.</p>
+}

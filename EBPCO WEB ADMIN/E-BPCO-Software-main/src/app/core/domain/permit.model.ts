@@ -62,6 +62,9 @@ export function isValidPermitType(value: string): value is PermitType {
 // Mirrors ApplicationType in application_model.dart.
 export type ApplicationAction = 'New' | 'Renewal' | 'Amendment';
 
+/** Defaults to 'Active' at every construction site. The revoke/suspend action itself is a small, optional admin capability — see ApplicationStore.setPermitRevocationStatus — not required for VerifyPermit to display Valid/Expired from day one. */
+export type PermitRevocationStatus = 'Active' | 'Suspended' | 'Revoked';
+
 export interface GeneratedPermit {
   applicationId: string;
   permitNumber: string;
@@ -72,6 +75,7 @@ export interface GeneratedPermit {
   expiryDate: string | null;
   approvingOfficial: string;
   approvingOffice: string;
+  revocationStatus: PermitRevocationStatus;
 }
 
 // The mobile app itself has not implemented a releasing-officer/claimant/

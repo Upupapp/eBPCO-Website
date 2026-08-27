@@ -1,4 +1,5 @@
 @use '../styles/tokens' as *;
+@use '../styles/motion' as *;
 
 @keyframes draw-line {
   from {
@@ -57,7 +58,7 @@
 }
 
 .area-fill {
-  animation: fade-in 0.8s ease both;
+  animation: fade-in $dur-chart-draw $ease-standard both;
 }
 
 .line-stroke {
@@ -66,7 +67,7 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1400;
-  animation: draw-line 1.4s ease-out both;
+  animation: draw-line $dur-chart-draw $ease-draw both;
 }
 
 .crosshair {

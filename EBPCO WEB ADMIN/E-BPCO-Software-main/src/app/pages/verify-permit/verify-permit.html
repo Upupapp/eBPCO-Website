@@ -1,0 +1,40 @@
+<div class="verify-shell">
+  <div class="verify-card">
+    <img class="verify-seal" src="/assets/logos/logo.png" alt="" />
+    <h1>Permit Verification</h1>
+    <p class="verify-lede">Municipality of Castilla, Sorsogon — Electronic Building Permit and Certificate of Occupancy</p>
+
+    @if (permit(); as permit) {
+      <div class="verify-status" [class]="status().toLowerCase()">{{ status() }}</div>
+
+      <dl class="verify-fields">
+        <div>
+          <dt>Permit Type</dt>
+          <dd>{{ row()?.permitType }}</dd>
+        </div>
+        <div>
+          <dt>Document</dt>
+          <dd>{{ documentTitle() }}</dd>
+        </div>
+        <div>
+          <dt>Permit No.</dt>
+          <dd>{{ permit.permitNumber }}</dd>
+        </div>
+        <div>
+          <dt>Project / Establishment</dt>
+          <dd>{{ businessLabel() ?? 'Not provided' }}</dd>
+        </div>
+        <div>
+          <dt>Issue Date</dt>
+          <dd>{{ permit.issuedDate }}</dd>
+        </div>
+        <div>
+          <dt>Issuing Office</dt>
+          <dd>{{ permit.approvingOffice }}</dd>
+        </div>
+      </dl>
+    } @else {
+      <p class="verify-not-found">No permit found for this number.</p>
+    }
+  </div>
+</div>

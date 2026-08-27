@@ -15,14 +15,6 @@
     </div>
 
     @if (row(); as row) {
-      @if (kind() === 'permit' && permitFormSafeUrl(); as formUrl) {
-        <iframe class="doc-pdf-frame-full" [src]="formUrl" title="Permit Form"></iframe>
-        @if (permitChecklistUrl(); as checklistUrl) {
-          <a class="doc-checklist-link no-print" [href]="checklistUrl" target="_blank" rel="noopener">
-            View Documentary Requirements Checklist (Building Permit &amp; Occupancy)
-          </a>
-        }
-      } @else {
         <article class="doc-page">
           @if (kind() === 'official-receipt' && hasOfficialReceipt()) {
             <div class="paid-stamp" aria-hidden="true">PAID</div>
@@ -33,7 +25,7 @@
               <span class="doc-letterhead-top">Republic of the Philippines</span>
               <span class="doc-letterhead-top">Province of Sorsogon</span>
               <strong>Municipality of Castilla</strong>
-              <span class="doc-letterhead-office">Electronic Business Permit and Clearance Office (eBPCO)</span>
+              <span class="doc-letterhead-office">Electronic Building Permit and Certificate of Occupancy (eBPCO)</span>
             </div>
           </header>
 
@@ -349,54 +341,6 @@
               }
             }
 
-            @case ('permit') {
-              @if (permit(); as permit) {
-                <section>
-                  <dl class="doc-fields">
-                    <div>
-                      <dt>Permit Number</dt>
-                      <dd>{{ permit.permitNumber }}</dd>
-                    </div>
-                    <div>
-                      <dt>Document</dt>
-                      <dd>{{ requirements()?.finalDocument }}</dd>
-                    </div>
-                    <div>
-                      <dt>Issued To</dt>
-                      <dd>{{ row.applicant }} — {{ row.businessName }}</dd>
-                    </div>
-                    <div>
-                      <dt>Barangay</dt>
-                      <dd>{{ row.location }}</dd>
-                    </div>
-                    <div>
-                      <dt>Permit Type</dt>
-                      <dd>{{ row.permitType }}</dd>
-                    </div>
-                    <div>
-                      <dt>Date Issued</dt>
-                      <dd>{{ permit.issuedDate }}</dd>
-                    </div>
-                    <div>
-                      <dt>Valid Until</dt>
-                      <dd>{{ permit.expiryDate ?? 'No fixed expiry' }}</dd>
-                    </div>
-                    <div>
-                      <dt>Approving Official</dt>
-                      <dd>{{ permit.approvingOfficial }}</dd>
-                    </div>
-                    <div>
-                      <dt>Approving Office</dt>
-                      <dd>{{ permit.approvingOffice }}</dd>
-                    </div>
-                  </dl>
-                  <p class="doc-note">{{ requirements()?.validityRules }}</p>
-                </section>
-              } @else {
-                <p class="doc-note">No permit has been generated yet for this application.</p>
-              }
-            }
-
             @case ('release-form') {
               @if (release(); as release) {
                 <section>
@@ -435,11 +379,10 @@
           }
 
           <footer class="doc-footer">
-            <p>This is a system-generated document issued by the Electronic Business Permit and Clearance Office (eBPCO).</p>
+            <p>This is a system-generated document issued by the Electronic Building Permit and Certificate of Occupancy (eBPCO) system.</p>
             <p class="doc-footer-meta">Document Ref. {{ row.id }} · Generated {{ generatedOn }}</p>
           </footer>
         </article>
-      }
     } @else {
       <p class="doc-note">Application not found.</p>
     }

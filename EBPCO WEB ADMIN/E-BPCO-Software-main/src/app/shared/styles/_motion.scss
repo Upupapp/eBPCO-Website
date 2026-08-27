@@ -1,27 +1,20 @@
 // E-BPCO motion system.
 //
-// Two tiers, by design — not an oversight:
+// As of 2026-08-27, this app deliberately runs a single unified, tokenized
+// EXPRESSIVE motion system app-wide — not just on Splash/Login/Register —
+// per an explicit product decision (see docs/02-Design-System/10-Motion.md
+// § Maximalist Motion Exception). The two-tier split described below is
+// kept only as a naming convention for INTENSITY (small utility feedback
+// vs. bigger hero-scale moves), not as a scope restriction: every surface
+// in the app — dashboard, tables, forms, modals — is now a candidate for
+// the richer tier, not just the three screens that used to own it.
 //
-// 1. UTILITY MOTION (almost everything: tables, forms, dashboards, detail
-//    views). This app is a permit office's daily work tool. Motion here
-//    exists only to confirm an action landed or to soften a state change —
-//    never to be watched. Fast, small, no scroll-triggered reveals (a
-//    50-row table that fades in row by row makes staff wait to scan it),
-//    no parallax, no custom cursor. $dur-instant/$dur-fast/$dur-base cover
-//    this tier; $ease-standard is the only curve most of it needs.
-//
-// 2. EXPRESSIVE MOTION (splash, login, register only — the three screens
-//    with no data to scan, just a brand moment before work starts). This
-//    is where $dur-slow/$dur-cinematic and the entrance/settle curves
-//    belong. Splash's own keyframes stay bespoke (a hand-tuned nine-beat
-//    sequence isn't a token lookup), but new expressive work should still
-//    reach for $ease-entrance/$ease-settle rather than inventing another
-//    one-off bezier.
-//
-// Every animation in the app is neutralized under prefers-reduced-motion
-// by the global kill-switch in `styles.scss` — that's the one rule that
-// has to cover all of it, so tune durations here assuming it's the
-// backstop, not the first line of defense.
+// The one rule that hasn't changed: nothing here is hardcoded. Every
+// duration/easing/keyframe used anywhere in the app should be a token from
+// this file. And every animation in the app is neutralized under
+// prefers-reduced-motion by the global kill-switch in `styles.scss` — that
+// backstop still has to cover all of it, so tune durations here assuming
+// it's the last line of defense, not the first.
 
 // ---- Durations ----------------------------------------------------------
 
@@ -29,13 +22,28 @@ $dur-instant: 0.08s; // press/active feedback — a button visibly "landing"
 $dur-fast: 0.15s; // hover, focus-visible, small state toggles
 $dur-base: 0.2s; // panel/dropdown open, tab switch, most transitions
 $dur-slow: 0.4s; // a section/card entering on mount
-$dur-cinematic: 0.6s; // reserved for splash/login/register hero beats
+$dur-cinematic: 0.6s; // hero beats — splash/login/register/welcome
+
+$dur-stagger-step: 0.04s; // per-item delay increment for cascading rows/cards/list items
+$dur-count-up: 0.9s; // KPI number count-up
+$dur-chart-draw: 1.1s; // chart path/bar/arc draw-in
+$dur-page: 0.28s; // route/page content mount transition
+
+// Small named delays for staggered hero-moment content (welcome's
+// capability cards, etc.) — named so page files never hardcode a raw
+// second value themselves.
+$delay-0: 0.1s;
+$delay-1: 0.15s;
+$delay-2: 0.25s;
+$delay-3: 0.35s;
 
 // ---- Easing ---------------------------------------------------------------
 
 $ease-standard: ease; // the default — reversible UI state (hover, focus, open/close)
 $ease-entrance: cubic-bezier(0.16, 1, 0.3, 1); // fast start, soft landing — content arriving
 $ease-settle: cubic-bezier(0.22, 1, 0.36, 1); // a gentler landing for hero-scale moves
+$ease-emphasis: cubic-bezier(0.34, 1.56, 0.64, 1); // slight overshoot — a value/status visibly "landing"
+$ease-draw: cubic-bezier(0.65, 0, 0.35, 1); // mechanical, even — chart stroke/arc draw-ins
 
 // ---- Shorthands ------------------------------------------------------------
 // Most call sites just want "the fast one" or "the entrance one" without
@@ -45,3 +53,71 @@ $ease-settle: cubic-bezier(0.22, 1, 0.36, 1); // a gentler landing for hero-scal
 $transition-fast: $dur-fast $ease-standard;
 $transition-base: $dur-base $ease-standard;
 $transition-entrance: $dur-slow $ease-entrance;
+$transition-stagger: $dur-base $ease-entrance;
+
+// ---- Shared keyframes -------------------------------------------------------
+// Centralized here rather than redefined per component, so every cascading
+// list/row/card in the app plays the same entrance.
+
+// The one shared "this page just mounted" cue — added to a routed page's
+// own `:host` alongside whatever entrance animation its own content
+// already plays, so navigating between pages reads as a soft arrival
+// rather than an instant swap. See docs/02-Design-System/10-Motion.md
+// § Page Transitions for why this is plain CSS rather than
+// @angular/animations or the View Transitions API.
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: -120% 0;
+  }
+  to {
+    background-position: 120% 0;
+  }
+}
+
+@keyframes pill-swap {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  60% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes count-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

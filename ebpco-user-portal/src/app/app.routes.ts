@@ -3,7 +3,16 @@ import { authGuard, guestGuard } from './core/session/auth.guard';
 import { AppShellComponent } from './shared/layout/app-shell.component';
 
 export const routes: Routes = [
-  { path: '', loadComponent: () => import('./features/landing/landing.page').then((m) => m.LandingPage) },
+  { path: '', loadComponent: () => import('./features/splash/splash.page').then((m) => m.SplashPage) },
+  { path: 'onboarding', loadComponent: () => import('./features/onboarding/onboarding.page').then((m) => m.OnboardingPage) },
+  { path: 'landing', loadComponent: () => import('./features/landing/landing.page').then((m) => m.LandingPage) },
+  { path: 'how-it-works', loadComponent: () => import('./features/how-it-works/how-it-works.page').then((m) => m.HowItWorksPage) },
+  { path: 'terms', loadComponent: () => import('./features/legal/terms.page').then((m) => m.TermsPage) },
+  { path: 'privacy', loadComponent: () => import('./features/legal/privacy.page').then((m) => m.PrivacyPage) },
+  // Public, no-login permit verification — the destination the QR block on
+  // every generated permit points to.
+  { path: 'verify/:permitNumber', loadComponent: () => import('./features/verify/verify-permit.page').then((m) => m.VerifyPermitPage) },
+  { path: 'verify', loadComponent: () => import('./features/verify/verify-permit.page').then((m) => m.VerifyPermitPage) },
   {
     path: 'login',
     canActivate: [guestGuard],
@@ -36,6 +45,7 @@ export const routes: Routes = [
       { path: 'permits/apply', loadComponent: () => import('./features/permits/application-wizard.page').then((m) => m.ApplicationWizardPage) },
       { path: 'applications', loadComponent: () => import('./features/applications/my-applications.page').then((m) => m.MyApplicationsPage) },
       { path: 'applications/:id', loadComponent: () => import('./features/applications/application-details.page').then((m) => m.ApplicationDetailsPage) },
+      { path: 'applications/:id/permit', loadComponent: () => import('./features/applications/permit-document.page').then((m) => m.PermitDocumentPage) },
       { path: 'documents', loadComponent: () => import('./features/documents/my-documents.page').then((m) => m.MyDocumentsPage) },
       { path: 'payments', loadComponent: () => import('./features/payments/payments-list.page').then((m) => m.PaymentsListPage) },
       { path: 'payments/:applicationId', loadComponent: () => import('./features/payments/payment-flow.page').then((m) => m.PaymentFlowPage) },
@@ -45,5 +55,6 @@ export const routes: Routes = [
       { path: '**', redirectTo: 'dashboard' },
     ],
   },
-  { path: '**', redirectTo: '' },
+  { path: 'not-found', loadComponent: () => import('./features/not-found/not-found.page').then((m) => m.NotFoundPage) },
+  { path: '**', redirectTo: 'not-found' },
 ];

@@ -1,6 +1,7 @@
 import { Component, computed, input, output } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { Icon } from '../icon/icon';
+import { CountUpDirective } from '../utils/count-up.directive';
 
 export type KpiTone = 'brand' | 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'violet';
 export type KpiDensity = 'standard' | 'compact';
@@ -73,7 +74,7 @@ const TONE_ACCENT: Record<KpiTone, string> = {
 
 @Component({
   selector: 'app-kpi-card',
-  imports: [Icon, NgTemplateOutlet],
+  imports: [Icon, NgTemplateOutlet, CountUpDirective],
   templateUrl: './kpi-card.html',
   styleUrl: './kpi-card.scss',
 })
