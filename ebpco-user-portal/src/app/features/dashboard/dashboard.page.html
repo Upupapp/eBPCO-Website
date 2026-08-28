@@ -1,0 +1,167 @@
+<div class="dk-page">
+  <div class="dk-header">
+    <div>
+      <h1 class="dk-heading">Welcome back, {{ firstName() }}</h1>
+      <p class="dk-subtitle">Here's what's happening with your applications.</p>
+    </div>
+    <div class="dk-header-actions">
+      <a routerLink="/permits" class="dk-btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 3h7l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+          <path d="M14 3v4h4" />
+          <path d="M12 13v6" />
+          <path d="m9.5 15.5 2.5-2.5 2.5 2.5" />
+        </svg>
+        <span>Apply for Permit</span>
+      </a>
+      <a routerLink="/businesses/register" class="dk-btn-secondary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 9 5 4h14l1 5" />
+          <path d="M4 9a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0" />
+          <path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9" />
+        </svg>
+        <span>Register Business</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="dk-kpi-grid">
+    <div class="dk-kpi dk-kpi-red">
+      <div class="dk-kpi-icon-wrap">
+        <span class="dk-kpi-halo" aria-hidden="true"></span>
+        <div class="dk-kpi-icon-surface">
+          <svg class="dk-kpi-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <path d="M8 15 10 8h20l2 7Z" fill="#C81E2C" />
+            <path d="M12.5 15V8.6M17.5 15V8.2M22.5 15V8.2M27.5 15V8.6" stroke="#A91622" stroke-width="1.1" opacity="0.55" />
+            <path d="M8 15h24" stroke="#A91622" stroke-width="1.2" />
+            <path d="M9.5 15h21v15a1 1 0 0 1-1 1h-19a1 1 0 0 1-1-1V15Z" fill="#FFFFFF" stroke="#E7E9EE" stroke-width="1.2" />
+            <rect x="11.5" y="18" width="4.4" height="4.4" rx="0.8" fill="#FCEBED" stroke="#C81E2C" stroke-width="1" />
+            <rect x="24.1" y="18" width="4.4" height="4.4" rx="0.8" fill="#FCEBED" stroke="#C81E2C" stroke-width="1" />
+            <path d="M16.5 31v-6.2a3.5 3.5 0 0 1 7 0V31" fill="none" stroke="#A91622" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+      <div class="dk-kpi-content">
+        <div class="dk-kpi-label">My Businesses</div>
+        <div class="dk-kpi-value">{{ businesses.myBusinesses().length }}</div>
+      </div>
+    </div>
+
+    <div class="dk-kpi dk-kpi-blue">
+      <div class="dk-kpi-icon-wrap">
+        <span class="dk-kpi-halo" aria-hidden="true"></span>
+        <div class="dk-kpi-icon-surface">
+          <svg class="dk-kpi-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <rect x="12.5" y="7" width="16" height="21" rx="2" fill="#EEF5FC" stroke="#CFE1F5" stroke-width="1" />
+            <rect x="9.5" y="9.5" width="19" height="23" rx="2.2" fill="#FFFFFF" stroke="#3178C6" stroke-width="1.6" />
+            <rect x="15.5" y="6.5" width="7" height="5" rx="1.4" fill="#245EA3" />
+            <rect x="16.7" y="7.6" width="4.6" height="2.8" rx="0.8" fill="#3178C6" />
+            <path d="M13 18h9" stroke="#CFE1F5" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M13 22h9" stroke="#CFE1F5" stroke-width="1.6" stroke-linecap="round" />
+            <path d="m13.5 27 2.6 2.6L22 24" stroke="#3178C6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+      <div class="dk-kpi-content">
+        <div class="dk-kpi-label">Total Applications</div>
+        <div class="dk-kpi-value">{{ applications.myApplications().length }}</div>
+      </div>
+    </div>
+
+    <div class="dk-kpi dk-kpi-amber">
+      <div class="dk-kpi-icon-wrap">
+        <span class="dk-kpi-halo" aria-hidden="true"></span>
+        <div class="dk-kpi-icon-surface">
+          <svg class="dk-kpi-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <circle cx="18" cy="18" r="12" fill="#FFF9EE" stroke="#E08A00" stroke-width="1.8" />
+            <path d="M18 8v1.6M28 18h-1.6M18 28v-1.6M8 18h1.6" stroke="#E08A00" stroke-width="1.2" stroke-linecap="round" opacity="0.6" />
+            <path d="M18 11.5V18l5 3" stroke="#B86C00" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="28" cy="28" r="7.5" fill="#FFFFFF" stroke="#FFF4DD" stroke-width="1" />
+            <path d="M25.3 24.5h5.4l-2.4 3.1v.1l2.4 3.1h-5.4l2.4-3.1v-.1Z" fill="#E08A00" stroke="#B86C00" stroke-width="0.9" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+      <div class="dk-kpi-content">
+        <div class="dk-kpi-label">Awaiting Action</div>
+        <div class="dk-kpi-value">{{ awaitingAction() }}</div>
+      </div>
+    </div>
+
+    <div class="dk-kpi dk-kpi-green">
+      <div class="dk-kpi-icon-wrap">
+        <span class="dk-kpi-halo" aria-hidden="true"></span>
+        <div class="dk-kpi-icon-surface">
+          <svg class="dk-kpi-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <circle cx="20" cy="19" r="13.5" fill="#EAF7EE" />
+            <circle cx="20" cy="19" r="13.5" stroke="#168A45" stroke-width="1" stroke-dasharray="2.2 2.6" opacity="0.5" />
+            <circle cx="20" cy="19" r="10.2" fill="#FFFFFF" stroke="#168A45" stroke-width="1.8" />
+            <path d="m15 19.3 3 3 7.2-7.8" stroke="#0F6F37" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+      <div class="dk-kpi-content">
+        <div class="dk-kpi-label">Ready for Release</div>
+        <div class="dk-kpi-value">{{ readyForRelease() }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dk-lower-grid">
+    <div class="dk-panel">
+      <div class="dk-panel-header">
+        <div class="dk-panel-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1Z" />
+            <path d="M6 6h12a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z" />
+            <path d="m8.5 12.5 1.5 1.5 3-3" />
+          </svg>
+        </div>
+        <h2 class="dk-panel-title">Active Applications</h2>
+      </div>
+
+      @if (applications.myApplications().length === 0) {
+        <div class="empty-state">No applications yet. <a routerLink="/permits">Start your first application.</a></div>
+      } @else {
+        <div class="dk-app-list">
+          @for (app of applications.myApplications(); track app.id) {
+            <a [routerLink]="['/applications', app.id]" class="dk-app-row">
+              <div class="dk-app-info">
+                <div class="dk-app-title">{{ app.permitType }}</div>
+                <div class="dk-app-meta">{{ app.applicationNumber }} &middot; {{ app.businessName }}</div>
+              </div>
+              <app-status-pill [label]="statusLabel(app.lifecycleStatus)" />
+            </a>
+          }
+        </div>
+        <div class="dk-panel-footer">
+          <a routerLink="/applications" class="dk-view-all">View all applications &rarr;</a>
+        </div>
+      }
+    </div>
+
+    <div class="dk-panel">
+      <div class="dk-panel-header">
+        <div class="dk-panel-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6H4c.5-.5 2-2 2-6Z" />
+            <path d="M10 19a2 2 0 0 0 4 0" />
+          </svg>
+        </div>
+        <h2 class="dk-panel-title">Recent Notifications</h2>
+      </div>
+
+      <div class="dk-notif-list">
+        @for (n of notifications.all().slice(0, 4); track n.id) {
+          <div class="dk-notif-row">
+            <div class="dk-notif-title" [class.is-read]="n.isRead">{{ n.title }}</div>
+            <div class="dk-notif-body">{{ n.message }}</div>
+            <div class="dk-notif-date">{{ formatDate(n.createdAt) }}</div>
+          </div>
+        }
+      </div>
+      <div class="dk-panel-footer">
+        <a routerLink="/notifications" class="dk-view-all">View all notifications &rarr;</a>
+      </div>
+    </div>
+  </div>
+</div>

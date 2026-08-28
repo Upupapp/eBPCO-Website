@@ -1,9 +1,9 @@
 import { Component, input, output } from '@angular/core';
-import { GeneratedPermitDocument } from './generated-permit-document';
+import { UserPortalPermitPreview } from './user-portal-permit-preview';
 
 @Component({
   selector: 'app-generated-permit-document-modal',
-  imports: [GeneratedPermitDocument],
+  imports: [UserPortalPermitPreview],
   templateUrl: './generated-permit-document-modal.html',
   styleUrl: './generated-permit-document-modal.scss',
 })

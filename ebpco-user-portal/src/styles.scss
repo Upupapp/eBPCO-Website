@@ -248,58 +248,6 @@ a:hover { text-decoration: underline; }
 .badge-green { background: var(--success-100); color: var(--success-text); }
 .badge-red { background: var(--danger-100); color: var(--danger-text); }
 
-// Layout shell
-.shell { display: flex; min-height: 100vh; }
-.sidenav {
-  width: 240px;
-  flex-shrink: 0;
-  background: var(--surface);
-  border-right: 1px solid var(--border-light);
-  padding: 20px 12px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
-.sidenav .brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 10px 16px;
-  margin-bottom: 8px;
-  border-bottom: 2px solid var(--gold-border);
-}
-.sidenav .brand img { width: 32px; height: 32px; object-fit: contain; }
-.sidenav .brand span { font-weight: 800; color: var(--gray-900); font-size: 15px; }
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  border-left: 3px solid transparent;
-  color: var(--gray-600);
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 2px;
-  transition: background var(--ease-base), color var(--ease-base), border-color var(--ease-base);
-}
-.nav-link:hover { background: var(--gray-50); text-decoration: none; }
-.nav-link.active { background: var(--primary-50); color: var(--primary-700); border-left-color: var(--primary-500); }
-.main { flex: 1; min-width: 0; }
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 16px;
-  padding: 14px 24px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border-light);
-  position: sticky;
-  top: 0;
-  z-index: 5;
-}
-
 // Tables
 table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 table.table th { text-align: left; color: var(--primary-700); background: var(--primary-50); padding: 10px 12px; font-weight: 700; }
@@ -464,15 +412,15 @@ table.table tr:last-child td { border-bottom: none; }
 .toast.error { background: var(--danger-text); }
 
 // Onboarding carousel
-.onboarding-dots { display: flex; justify-content: center; gap: 6px; margin: 16px 0; }
+.onboarding-dots { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 16px 0; }
 .onboarding-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 999px;
-  background: var(--gray-200);
-  transition: width var(--ease-slow), background var(--ease-slow);
+  background: #e5e7eb;
+  transition: width 240ms ease, background-color 240ms ease, transform 240ms ease;
 }
-.onboarding-dot.active { width: 22px; background: var(--primary-500); animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.onboarding-dot.active { width: 42px; background: var(--primary-500); }
 .onboarding-track { display: flex; transition: transform var(--ease-slow); }
 .onboarding-slide { flex: 0 0 100%; text-align: center; padding: 0 24px; }
 

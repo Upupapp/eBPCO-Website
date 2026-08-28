@@ -8,7 +8,7 @@ const APPLICANT_STATUS_CLASS: Record<ApplicantStatus, string> = {
   'Under Review': 'badge-primary',
   'Payment Verification': 'badge-amber',
   Approved: 'badge-green',
-  'Ready for Release': 'badge-primary',
+  'Ready for Release': 'badge-green',
   Rejected: 'badge-red',
 };
 
