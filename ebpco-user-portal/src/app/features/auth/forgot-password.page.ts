@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
   imports: [FormsModule, RouterLink],
   template: `
     <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;">
-      <div class="card auth-card" style="width:100%; max-width:400px;">
+      <div class="card auth-card anim-pop-in" style="width:100%; max-width:400px;">
         @if (!sent()) {
           <h2>Forgot Password</h2>
           <p class="muted small" style="margin-bottom:16px;">Enter your account email and we'll send you a reset link.</p>

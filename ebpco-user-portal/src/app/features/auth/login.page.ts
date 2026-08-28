@@ -8,7 +8,7 @@ import { AuthService } from '../../core/session/auth.service';
   imports: [FormsModule, RouterLink],
   template: `
     <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;">
-      <div class="card auth-card" style="width:100%; max-width:400px;">
+      <div class="card auth-card anim-pop-in" style="width:100%; max-width:400px;">
         <div style="text-align:center; margin-bottom:20px;">
           <img src="logo.png" alt="eBPCO" style="width:48px; height:48px; object-fit:contain; margin-bottom:8px;" />
           <h2>Log In</h2>

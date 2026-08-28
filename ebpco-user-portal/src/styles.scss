@@ -472,7 +472,7 @@ table.table tr:last-child td { border-bottom: none; }
   background: var(--gray-200);
   transition: width var(--ease-slow), background var(--ease-slow);
 }
-.onboarding-dot.active { width: 22px; background: var(--primary-500); }
+.onboarding-dot.active { width: 22px; background: var(--primary-500); animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .onboarding-track { display: flex; transition: transform var(--ease-slow); }
 .onboarding-slide { flex: 0 0 100%; text-align: center; padding: 0 24px; }
 
@@ -485,4 +485,60 @@ table.table tr:last-child td { border-bottom: none; }
   border: 3px solid rgba(255, 255, 255, 0.35);
   border-top-color: #fff;
   animation: ebpco-spin 0.8s linear infinite;
+}
+
+// ---------------------------------------------------------------------------
+// Marketing/public screen motion — Splash, Onboarding, Landing, How It
+// Works, 404. Deliberately NOT used on the generated permit document or
+// Terms/Privacy, which stay restrained/printable. Every animation here is
+// transform/opacity only (GPU-friendly) and fully neutralized under
+// prefers-reduced-motion below.
+// ---------------------------------------------------------------------------
+
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flip-in {
+  from { opacity: 0; transform: perspective(600px) rotateY(-70deg) scale(0.9); }
+  to { opacity: 1; transform: perspective(600px) rotateY(0deg) scale(1); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.anim-fade-rise { animation: fade-rise 0.6s var(--ease-slow, 0.3s ease) both; }
+.anim-flip-in { animation: flip-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-pop-in { animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.anim-float { animation: float-y 3.4s ease-in-out infinite; }
+
+// A real, hover-driven 3D tilt — perspective + rotateX/rotateY read from
+// two CSS custom properties a mousemove handler sets per-card (see
+// landing.page.ts). Falls back to flat/no-op wherever those handlers
+// aren't wired up, since --tilt-x/--tilt-y simply default to 0.
+.tilt-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
+  transition: transform 0.15s ease-out, box-shadow var(--ease-base);
+  will-change: transform;
+}
+.tilt-card:hover { box-shadow: var(--shadow-md); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .tilt-card { transform: none !important; }
 }

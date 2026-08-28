@@ -62,7 +62,7 @@ const STEPS: ProcessStep[] = [
       <div class="accent-bar"></div>
 
       <section class="page" style="max-width:840px; flex:1;">
-        <div style="text-align:center; margin-bottom:32px;">
+        <div class="anim-fade-rise" style="text-align:center; margin-bottom:32px;">
           <h1 style="margin-bottom:8px;">How eBPCO Works</h1>
           <p class="muted" style="font-size:16px;">
             From registration to permit release — here's what to expect at every step.
@@ -71,8 +71,8 @@ const STEPS: ProcessStep[] = [
 
         <div style="display:flex; flex-direction:column; gap:16px;">
           @for (step of steps; track step.label; let i = $index) {
-            <div class="card" style="display:flex; gap:16px; align-items:flex-start;">
-              <div class="hiw-step-number">{{ i + 1 }}</div>
+            <div class="card anim-fade-rise" style="display:flex; gap:16px; align-items:flex-start;" [style.animation-delay]="i * 0.08 + 's'">
+              <div class="hiw-step-number anim-flip-in" [style.animation-delay]="i * 0.08 + 0.1 + 's'">{{ i + 1 }}</div>
               <div style="flex:1;">
                 <div class="badge badge-gold" style="margin-bottom:6px;">{{ step.label }}</div>
                 <h3 style="margin-bottom:4px;">{{ step.title }}</h3>

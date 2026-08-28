@@ -23,13 +23,16 @@ interface OnboardingSlide {
 
       <div style="flex:1; display:flex; align-items:center; overflow:hidden;">
         <div class="onboarding-track" [style.transform]="'translateX(-' + index() * 100 + '%)'" style="width:100%;">
-          @for (slide of slides; track slide.title) {
+          @for (slide of slides; track slide.title; let i = $index) {
             <div class="onboarding-slide">
-              <div style="width:120px; height:120px; margin:0 auto 24px; border-radius:50%; background:var(--gold-100); display:flex; align-items:center; justify-content:center;">
+              <div
+                [class.anim-flip-in]="i === index()"
+                style="width:120px; height:120px; margin:0 auto 24px; border-radius:50%; background:var(--gold-100); display:flex; align-items:center; justify-content:center;"
+              >
                 <img src="logo.png" alt="" style="width:56px; height:56px; object-fit:contain;" />
               </div>
-              <h2>{{ slide.title }}</h2>
-              <p class="muted">{{ slide.body }}</p>
+              <h2 [class.anim-fade-rise]="i === index()" style="animation-delay:0.15s;">{{ slide.title }}</h2>
+              <p class="muted" [class.anim-fade-rise]="i === index()" style="animation-delay:0.25s;">{{ slide.body }}</p>
             </div>
           }
         </div>

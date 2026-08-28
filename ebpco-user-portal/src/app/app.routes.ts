@@ -52,7 +52,12 @@ export const routes: Routes = [
       { path: 'notifications', loadComponent: () => import('./features/notifications/notifications.page').then((m) => m.NotificationsPage) },
       { path: 'profile', loadComponent: () => import('./features/profile/profile.page').then((m) => m.ProfilePage) },
       { path: 'help', loadComponent: () => import('./features/profile/help-support.page').then((m) => m.HelpSupportPage) },
-      { path: '**', redirectTo: 'dashboard' },
+      // No '**' here on purpose: an unmatched URL under this shell should
+      // fall through to the real 404 page below (which already links
+      // "Back to Home" to /dashboard for a signed-in visitor), not
+      // silently redirect to Dashboard with no sign anything was wrong.
+      // Angular backtracks past this whole route entry once none of its
+      // children match, so the trailing '**' → not-found still applies.
     ],
   },
   { path: 'not-found', loadComponent: () => import('./features/not-found/not-found.page').then((m) => m.NotFoundPage) },

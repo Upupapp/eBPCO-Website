@@ -11,7 +11,7 @@ type Step = 1 | 2 | 3;
   imports: [FormsModule, RouterLink],
   template: `
     <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;">
-      <div class="card auth-card" style="width:100%; max-width:520px;">
+      <div class="card auth-card anim-pop-in" style="width:100%; max-width:520px;">
         <div style="text-align:center; margin-bottom:12px;">
           <h2>Create Your Account</h2>
           <p class="muted small">Step {{ step() }} of 3</p>
