@@ -40,11 +40,20 @@ export class Contact {
   // as LGU-owned — a "Castilla - Public Information Office" page appears
   // to be the actual current official presence, but no confirmed handle/URL
   // for it was found, so the row is omitted rather than guessed.
+  // Relabelled 2026-08-30 on the owner's ruling. This portal IS the
+  // municipality's official information portal, which the footer and the page
+  // description both state — so labelling castillasorsogon.gov.ph as the
+  // "Official Website" had the site contradicting itself about which of the
+  // two was official. It remains the LGU's main website and is still linked;
+  // only the label changed.
   readonly fields: ContactField[] = [
-    { label: 'Municipal Hall Address', value: '1st Floor, Municipal Town Hall, Cumadcad, Castilla, Sorsogon' },
+    {
+      label: 'Municipal Hall Address',
+      value: '1st Floor, Municipal Town Hall, Cumadcad, Castilla, Sorsogon',
+    },
     { label: 'Telephone', value: '(056) 311-2112' },
     { label: 'Official Email', value: 'castilla.itdept@gmail.com' },
     { label: 'Office Hours', value: 'Monday–Friday, 8:00 AM–5:00 PM' },
-    { label: 'Official Website', value: 'https://www.castillasorsogon.gov.ph' },
+    { label: 'LGU Main Website', value: 'https://www.castillasorsogon.gov.ph' },
   ];
 }

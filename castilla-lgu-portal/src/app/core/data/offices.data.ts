@@ -191,7 +191,12 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     ],
     contact: {
       telephone: '0970-864-2404',
-      email: 'magierrogante@gmail.com',
+      // Withheld 2026-08-30 on the owner's ruling: this is an individual's
+      // personal address, not an office mailbox, and the portal is public.
+      // Kept in the Citizen's Charter record but not republished here until
+      // LGU Castilla confirms an official mailbox for this office. The
+      // office's LGU-issued number above is unaffected.
+      email: 'Pending confirmation',
       location: 'Castilla Municipal Hall, 1st Floor, Cumadcad, Castilla, Sorsogon',
       hours: 'Monday–Friday, 8:00 AM–5:00 PM',
       isPlaceholder: false,
@@ -274,7 +279,12 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     ],
     contact: {
       telephone: '0970-864-2407',
-      email: 'raqueljdollison@gmail.com',
+      // Withheld 2026-08-30 on the owner's ruling: this is an individual's
+      // personal address, not an office mailbox, and the portal is public.
+      // Kept in the Citizen's Charter record but not republished here until
+      // LGU Castilla confirms an official mailbox for this office. The
+      // office's LGU-issued number above is unaffected.
+      email: 'Pending confirmation',
       location: 'Castilla Municipal Hall, 2nd Floor, Cumadcad, Castilla, Sorsogon',
       hours: 'Monday–Friday, 8:00 AM–5:00 PM',
       isPlaceholder: false,
@@ -288,9 +298,11 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     shortDescription: 'Oversees public infrastructure planning, construction, and maintenance.',
     aboutText:
       'The Municipal Engineering Office plans, designs, and supervises the construction and maintenance of municipal infrastructure such as roads, buildings, and public facilities.',
-    // Sourced 2026-08-23 from the LGU Citizen's Charter. The published
-    // email looks like a personal address rather than an office mailbox,
-    // but it's what the LGU itself lists — shown as published, not "corrected".
+    // Sourced 2026-08-23 from the LGU Citizen's Charter. The email it lists
+    // is a personal address belonging to someone other than this office's
+    // named head, which is why it is now withheld below — see the note on the
+    // contact record. The observation was made when this was first written;
+    // the owner ruled on it 2026-08-30.
     head: { name: 'Jesus D. Abitria Jr.', position: 'Municipal Engineer', isPlaceholder: false },
     services: [
       'Infrastructure project design and supervision',
@@ -299,7 +311,12 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     ],
     contact: {
       telephone: '0970-864-2409',
-      email: 'arlyn.balmes1971@gmail.com',
+      // Withheld 2026-08-30 on the owner's ruling: this is an individual's
+      // personal address, not an office mailbox, and the portal is public.
+      // Kept in the Citizen's Charter record but not republished here until
+      // LGU Castilla confirms an official mailbox for this office. The
+      // office's LGU-issued number above is unaffected.
+      email: 'Pending confirmation',
       location: 'Castilla Municipal Hall, 2nd Floor, Cumadcad, Castilla, Sorsogon',
       hours: 'Monday–Friday, 8:00 AM–5:00 PM (no noon break)',
       isPlaceholder: false,
@@ -432,7 +449,12 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     ],
     contact: {
       telephone: '0970-864-2408',
-      email: 'cherokeekessellopez@gmail.com',
+      // Withheld 2026-08-30 on the owner's ruling: this is an individual's
+      // personal address, not an office mailbox, and the portal is public.
+      // Kept in the Citizen's Charter record but not republished here until
+      // LGU Castilla confirms an official mailbox for this office. The
+      // office's LGU-issued number above is unaffected.
+      email: 'Pending confirmation',
       location: 'Castilla Municipal Hall, 2nd Floor, Cumadcad, Castilla, Sorsogon',
       hours: 'Monday–Friday, 8:00 AM–5:00 PM',
       isPlaceholder: false,
