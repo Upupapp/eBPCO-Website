@@ -17,27 +17,23 @@
   # inheriting whatever the build image currently defaults to.
   NODE_VERSION = "22"
 
-# A real file always wins over a redirect, so these rules only fire for paths
-# that do not exist in the published output.
-
-# Missing assets must 404, not fall through to the SPA shell below. Without
-# this rule a missing image or application-form PDF returns 200 with the
-# HTML page as its body — a citizen clicking "Download the Official
-# Application Form (PDF)" would save an HTML file named .pdf, and no monitor
-# would ever see the breakage because nothing 404s.
-[[redirects]]
-  from   = "/assets/*"
-  to     = "/assets/:splat"
-  status = 404
-
-[[redirects]]
-  from   = "/favicon.ico"
-  to     = "/favicon.ico"
-  status = 404
-
-# Client-side routing: the nine content routes are resolved by the Angular
-# router, so any remaining path serves the app shell.
-[[redirects]]
-  from   = "/*"
-  to     = "/index.html"
-  status = 200
+# There is deliberately NO catch-all rewrite here.
+#
+# Every route is prerendered to a real HTML file at build time — all 46 of
+# them, the office and permit detail pages included — so Netlify serves each
+# address from disk and the client router takes over from there. Nothing needs
+# rewriting to /index.html.
+#
+# Removing that rewrite is what makes the status codes honest. It previously
+# answered EVERY unmatched path with the app shell at 200: a mistyped address
+# looked like a working page, a missing form PDF downloaded as an HTML file
+# named .pdf, and three consecutive failed deploys went unnoticed for two days
+# because nothing on the site could return an error. Now an address with no
+# file behind it gets 404.html — the prerendered not-found page — with a real
+# 404 status, and a missing asset simply 404s.
+#
+# The cost, stated plainly: a route that is added to app.routes.ts but not
+# prerendered will 404 in production instead of falling back to the shell.
+# Angular prerenders concrete routes automatically; a new PARAMETERISED route
+# needs its slugs enumerated in app.routes.server.ts, as offices/:slug and
+# permits/:slug are.

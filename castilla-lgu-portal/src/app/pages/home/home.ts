@@ -1,9 +1,9 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   OnDestroy,
   WritableSignal,
+  afterNextRender,
   inject,
   signal,
 } from '@angular/core';
@@ -45,7 +45,7 @@ const FIELD_ICONS: Record<string, IconName> = {
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home implements AfterViewInit, OnDestroy {
+export class Home implements OnDestroy {
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
 
   readonly municipalityShortName = 'Castilla';
@@ -93,8 +93,14 @@ export class Home implements AfterViewInit, OnDestroy {
   // `count` in municipality.data.ts — nothing is hardcoded here, so revising
   // the sourced data revises what the page animates to. Fields without a
   // `count` (ZIP, PSGC, Province…) render `value` verbatim instead.
+  // Seeded with the real figure, not zero. These are prerendered into the
+  // HTML every visitor and every crawler receives, so starting at zero would
+  // publish "Population 0" as the page's own content and only correct it once
+  // JavaScript ran. The count-up still happens in the browser — animateCount
+  // begins near zero on its first frame — but the document is truthful before
+  // any of that.
   private readonly counters = new Map<string, WritableSignal<number>>(
-    this.profileFields.filter((f) => f.count !== undefined).map((f) => [f.label, signal(0)]),
+    this.profileFields.filter((f) => f.count !== undefined).map((f) => [f.label, signal(f.count!)]),
   );
 
   /** Current animated value for a counting field; the real value if it isn't animating. */
@@ -121,9 +127,17 @@ export class Home implements AfterViewInit, OnDestroy {
     return FIELD_ICONS[label] ?? 'id';
   }
 
-  ngAfterViewInit(): void {
-    this.setupCounters();
-    this.setupParallax();
+  constructor() {
+    // afterNextRender, not ngAfterViewInit. Both fire once the view exists,
+    // but ngAfterViewInit also runs during prerendering, where window and
+    // requestAnimationFrame do not exist — setupParallax reached
+    // window.addEventListener and took the whole page's prerender down with
+    // it. afterNextRender is browser-only by construction, so these effects
+    // cannot run anywhere they would fail.
+    afterNextRender(() => {
+      this.setupCounters();
+      this.setupParallax();
+    });
   }
 
   ngOnDestroy(): void {

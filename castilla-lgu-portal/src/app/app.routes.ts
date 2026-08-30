@@ -43,6 +43,15 @@ export const routes: Routes = [
     path: 'privacy',
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
   },
+  {
+    // A concrete path as well as the catch-all, so the not-found page
+    // prerenders to a real file. Netlify serves 404.html with a genuine 404
+    // status for any address that has no file of its own, which is what makes
+    // the status code honest rather than the 200 a client router is stuck
+    // with.
+    path: '404',
+    loadComponent: () => import('./pages/not-found/not-found').then((m) => m.NotFound),
+  },
   // Not a redirect to '': that answered every mistyped or retired address
   // with the homepage, so a broken link looked like a working one and a
   // crawler saw duplicate content at every wrong URL.

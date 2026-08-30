@@ -14,7 +14,15 @@ import { InjectionToken } from '@angular/core';
 export const WEBGL_SUPPORT = new InjectionToken<boolean>('WEBGL_SUPPORT', {
   providedIn: 'root',
   factory: () => {
-    if (typeof document === 'undefined') return false;
+    // Optimistic where there is no document to ask — during prerendering.
+    // The alternative is worse than it looks: answering false would bake
+    // "an interactive map cannot be displayed on this device" into the HTML
+    // every visitor receives, including the overwhelming majority whose
+    // browser is perfectly capable, and only correct it once hydration runs.
+    // Assuming capable and letting the client downgrade is the honest
+    // default, and clicking through on a browser that genuinely lacks WebGL
+    // reaches OpenStreetMap's own notice rather than nothing.
+    if (typeof document === 'undefined') return true;
     try {
       const canvas = document.createElement('canvas');
       // webgl2 first: some browsers expose it while returning null for the
