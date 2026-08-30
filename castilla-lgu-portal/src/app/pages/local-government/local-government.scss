@@ -101,7 +101,12 @@
   position: relative;
   width: calc(100% + 20px);
   margin-right: -20px;
-  -webkit-mask-image: linear-gradient(to left, black 55%, rgba(0, 0, 0, 0.55) 78%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    to left,
+    black 55%,
+    rgba(0, 0, 0, 0.55) 78%,
+    transparent 100%
+  );
   mask-image: linear-gradient(to left, black 55%, rgba(0, 0, 0, 0.55) 78%, transparent 100%);
   pointer-events: none;
   user-select: none;
@@ -212,7 +217,9 @@
   font-weight: 800;
   color: #fff;
   background: linear-gradient(155deg, $color-brand-600, $color-brand-700);
-  box-shadow: 0 0 0 5px $color-gold-100, $shadow-card-hover;
+  box-shadow:
+    0 0 0 5px $color-gold-100,
+    $shadow-card-hover;
 
   &.mayor-photo--image {
     object-fit: cover;

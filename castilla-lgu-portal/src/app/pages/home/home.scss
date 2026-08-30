@@ -553,8 +553,20 @@
     // bleed runs past the column into the page gutter) needed its own
     // dissolve too, not just a hard viewport clip — a wide flat ellipse
     // kept the left edge at full strength right up to the crop line.
-    -webkit-mask-image: radial-gradient(ellipse 58% 82% at 34% 58%, black 0%, black 32%, rgba(0, 0, 0, 0.5) 62%, transparent 92%);
-    mask-image: radial-gradient(ellipse 58% 82% at 34% 58%, black 0%, black 32%, rgba(0, 0, 0, 0.5) 62%, transparent 92%);
+    -webkit-mask-image: radial-gradient(
+      ellipse 58% 82% at 34% 58%,
+      black 0%,
+      black 32%,
+      rgba(0, 0, 0, 0.5) 62%,
+      transparent 92%
+    );
+    mask-image: radial-gradient(
+      ellipse 58% 82% at 34% 58%,
+      black 0%,
+      black 32%,
+      rgba(0, 0, 0, 0.5) 62%,
+      transparent 92%
+    );
     pointer-events: none;
     user-select: none;
 
