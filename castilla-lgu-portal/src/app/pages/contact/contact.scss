@@ -73,6 +73,67 @@
   }
 }
 
+// Same box as .map-frame so asking for the map does not make the page jump.
+.map-placeholder {
+  aspect-ratio: 16 / 10;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  background: $color-bg-subtle;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.map-placeholder-icon {
+  color: $color-brand-600;
+  line-height: 0;
+}
+
+.map-placeholder-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-ink-900;
+}
+
+.map-placeholder-address {
+  margin: 0;
+  max-width: 26rem;
+  font-size: 0.88rem;
+  color: $color-ink-600;
+  line-height: 1.5;
+}
+
+.map-load-btn {
+  margin-top: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  background: $color-brand-600;
+  border: 1px solid $color-brand-700;
+  border-radius: $radius-md;
+  cursor: pointer;
+
+  &:hover {
+    background: $color-brand-700;
+  }
+}
+
+.map-placeholder-note {
+  margin: 0;
+  max-width: 24rem;
+  font-size: 0.78rem;
+  // ink-500 is 6.13:1 on this background; the smaller type is exactly where
+  // a lighter token would have stopped meeting AA.
+  color: $color-ink-500;
+  line-height: 1.5;
+}
+
 .map-note {
   margin-top: 0.85rem;
   font-size: 0.8rem;

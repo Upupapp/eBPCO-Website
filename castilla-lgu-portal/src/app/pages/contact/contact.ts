@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SectionHeading } from '../../shared/section-heading/section-heading';
+import { WEBGL_SUPPORT } from '../../core/browser/webgl.token';
 
 interface ContactField {
   label: string;
@@ -15,6 +16,24 @@ interface ContactField {
 })
 export class Contact {
   private readonly sanitizer = inject(DomSanitizer);
+
+  // The map is loaded on request rather than on page view, for two reasons
+  // that happen to have the same fix.
+  //
+  // Privacy: the embed is a third party, and merely rendering the page would
+  // disclose every visitor's IP address to it. The privacy page states this
+  // portal does not collect personal data; loading a third-party frame
+  // unasked sits awkwardly beside that, and the reader gets to decide.
+  //
+  // Robustness: OpenStreetMap's embed needs WebGL and renders its own error
+  // notice without it. Where WebGL is absent the button is not offered at
+  // all, so nobody is invited to open a frame that cannot draw.
+  readonly mapRequested = signal(false);
+  readonly webglSupported = inject(WEBGL_SUPPORT);
+
+  showMap(): void {
+    this.mapRequested.set(true);
+  }
 
   // Sourced 2026-08-23: OpenStreetMap identifies this building directly as
   // "Castilla Municipal Hall" (amenity=townhall, way 262485769) — a

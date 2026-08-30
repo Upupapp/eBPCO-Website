@@ -20,14 +20,62 @@
     </dl>
 
     <div class="map-panel">
-      <div class="map-frame">
-        <iframe
-          title="Castilla Municipal Hall location"
-          [src]="mapEmbedUrl"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
-      </div>
+      @if (mapRequested()) {
+        <div class="map-frame">
+          <iframe
+            title="Map of Castilla Municipal Hall, Cumadcad"
+            [src]="mapEmbedUrl"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      } @else {
+        <!--
+          Shown until the reader asks for the map. It is not a spinner or a
+          grey box: the address, the barangay and the road are the things
+          someone on this page actually needs, and they are here whether or
+          not the map ever loads.
+        -->
+        <div class="map-placeholder">
+          <span class="map-placeholder-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28">
+              <path
+                d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linejoin="round"
+              />
+              <circle
+                cx="12"
+                cy="9.5"
+                r="2.4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+              />
+            </svg>
+          </span>
+          <p class="map-placeholder-title">Castilla Municipal Hall</p>
+          <p class="map-placeholder-address">
+            Cumadcad, Castilla, Sorsogon — along the Maharlika Highway
+          </p>
+
+          @if (webglSupported) {
+            <button type="button" class="map-load-btn" (click)="showMap()">
+              Show interactive map
+            </button>
+            <p class="map-placeholder-note">
+              Loads a map from OpenStreetMap, a third-party service.
+            </p>
+          } @else {
+            <p class="map-placeholder-note">
+              An interactive map cannot be displayed on this device. Use Get Directions below, or
+              the address above.
+            </p>
+          }
+        </div>
+      }
       <p class="map-note">Castilla Municipal Hall, Cumadcad — along the Maharlika Highway.</p>
       <a class="directions-btn" [href]="directionsUrl" target="_blank" rel="noopener"
         >Get Directions</a
