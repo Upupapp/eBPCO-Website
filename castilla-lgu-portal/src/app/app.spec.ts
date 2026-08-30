@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { appConfig } from './app.config';
 import { App } from './app';
 
 describe('App', () => {
@@ -46,5 +47,42 @@ describe('App', () => {
     const focusable = host.querySelectorAll('a, button');
     expect(focusable.length).toBeGreaterThan(1);
     expect(focusable[0].classList.contains('skip-link')).toBe(true);
+  });
+});
+
+describe('router configuration', () => {
+  // Regression guard for F-08. Angular's default scroll behaviour is
+  // 'disabled', which leaves the offset untouched across navigations, so
+  // opening an office from part-way down the Offices list landed the reader
+  // part-way down the office page.
+  //
+  // withInMemoryScrolling registers its scroller under a token @angular/router
+  // does not export, so the token is recovered from the feature itself — which
+  // means this asserts against the application's real appConfig rather than a
+  // constant restated in the test.
+  const scrollerToken = (
+    withInMemoryScrolling({}) as unknown as { ɵproviders: Array<{ provide: unknown }> }
+  ).ɵproviders[0].provide;
+
+  async function routerScroller(): Promise<{ options: Record<string, unknown> }> {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      providers: [...appConfig.providers],
+    }).compileComponents();
+    return TestBed.inject(scrollerToken as never);
+  }
+
+  it('registers an in-memory scroller at all', async () => {
+    expect(await routerScroller()).toBeTruthy();
+  });
+
+  it('scrolls to the top on a forward navigation', async () => {
+    const scroller = await routerScroller();
+    expect(scroller.options['scrollPositionRestoration']).toBe('top');
+  });
+
+  it('keeps fragment links working, which the skip link depends on', async () => {
+    const scroller = await routerScroller();
+    expect(scroller.options['anchorScrolling']).toBe('enabled');
   });
 });
