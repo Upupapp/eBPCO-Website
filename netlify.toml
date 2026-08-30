@@ -1,0 +1,43 @@
+# Build config for the Municipality of Castilla LGU information portal.
+#
+# The Angular app is NOT at the repository root — the root holds only
+# castilla-lgu-portal/, docs/ and assets/, with no package.json and no
+# index.html. Without `base` below, Netlify builds at the root, finds nothing
+# to build, publishes an empty directory, and every path returns its default
+# 404 page.
+[build]
+  base    = "castilla-lgu-portal"
+  command = "npm run build"
+  # Angular emits browser assets into dist/<project>/browser; angular.json sets
+  # no explicit outputPath, so this tracks the project name in package.json.
+  publish = "dist/castilla-lgu-portal/browser"
+
+[build.environment]
+  # Angular 22 and npm 11 both require a current Node. Pin it rather than
+  # inheriting whatever the build image currently defaults to.
+  NODE_VERSION = "22"
+
+# A real file always wins over a redirect, so these rules only fire for paths
+# that do not exist in the published output.
+
+# Missing assets must 404, not fall through to the SPA shell below. Without
+# this rule a missing image or application-form PDF returns 200 with the
+# HTML page as its body — a citizen clicking "Download the Official
+# Application Form (PDF)" would save an HTML file named .pdf, and no monitor
+# would ever see the breakage because nothing 404s.
+[[redirects]]
+  from   = "/assets/*"
+  to     = "/assets/:splat"
+  status = 404
+
+[[redirects]]
+  from   = "/favicon.ico"
+  to     = "/favicon.ico"
+  status = 404
+
+# Client-side routing: the nine content routes are resolved by the Angular
+# router, so any remaining path serves the app shell.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
