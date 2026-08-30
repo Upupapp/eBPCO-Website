@@ -1,4 +1,11 @@
-import { MunicipalOffice, OfficeCategoryInfo, OfficeContact, OfficeHead } from '../models/office.model';
+import {
+  MunicipalOffice,
+  OfficeCategoryInfo,
+  OfficeContact,
+  OfficeHead,
+} from '../models/office.model';
+import { Official } from '../models/official.model';
+import { MAYOR, VICE_MAYOR } from './officials.data';
 
 // Per-office telephone/email are unverified for most offices — the UI hides
 // those two rows rather than showing "Pending confirmation" text (see
@@ -27,6 +34,19 @@ function placeholderHead(position: string): OfficeHead {
   };
 }
 
+// The Mayor and Vice Mayor are already sourced and confirmed in
+// officials.data.ts for /local-government. Deriving their office-page heads
+// from that same record keeps one fact in one place: previously these two
+// offices declared their own placeholder head, so the portal named the Mayor
+// on one page and showed his office as having no head on another.
+function headFromOfficial(official: Official): OfficeHead {
+  return {
+    name: official.name,
+    position: official.position,
+    isPlaceholder: official.isPlaceholder,
+  };
+}
+
 export const OFFICE_CATEGORIES: OfficeCategoryInfo[] = [
   { id: 'executive', label: 'Executive' },
   { id: 'administrative', label: 'Administrative' },
@@ -41,10 +61,11 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     slug: 'office-of-the-mayor',
     name: 'Office of the Municipal Mayor',
     category: 'executive',
-    shortDescription: 'Leads the executive administration of the municipality and oversees all local government operations.',
+    shortDescription:
+      'Leads the executive administration of the municipality and oversees all local government operations.',
     aboutText:
       'The Office of the Municipal Mayor exercises general supervision over all municipal offices, implements local policies and ordinances, and represents the municipality in official and ceremonial functions.',
-    head: placeholderHead('Municipal Mayor'),
+    head: headFromOfficial(MAYOR),
     services: [
       'Executive supervision of municipal departments and offices',
       'Enforcement of laws, ordinances, and executive issuances',
@@ -52,16 +73,21 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       'Representation of the municipality in official matters',
     ],
     contact: placeholderContact(),
-    relatedOfficeSlugs: ['office-of-the-vice-mayor', 'sangguniang-bayan', 'municipal-administrator'],
+    relatedOfficeSlugs: [
+      'office-of-the-vice-mayor',
+      'sangguniang-bayan',
+      'municipal-administrator',
+    ],
   },
   {
     slug: 'office-of-the-vice-mayor',
     name: 'Office of the Municipal Vice Mayor',
     category: 'executive',
-    shortDescription: 'Presides over the Sangguniang Bayan and assumes executive duties in the Mayor’s absence.',
+    shortDescription:
+      'Presides over the Sangguniang Bayan and assumes executive duties in the Mayor’s absence.',
     aboutText:
       'The Office of the Municipal Vice Mayor presides over sessions of the Sangguniang Bayan, the municipality’s legislative body, and performs executive functions as provided under the Local Government Code.',
-    head: placeholderHead('Municipal Vice Mayor'),
+    head: headFromOfficial(VICE_MAYOR),
     services: [
       'Presiding officer of the Sangguniang Bayan',
       'Legislative session scheduling and records oversight',
@@ -74,11 +100,16 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     slug: 'sangguniang-bayan',
     name: 'Sangguniang Bayan',
     category: 'executive',
-    shortDescription: 'The municipality’s legislative council, responsible for enacting local ordinances and resolutions.',
+    shortDescription:
+      'The municipality’s legislative council, responsible for enacting local ordinances and resolutions.',
     aboutText:
       'The Sangguniang Bayan is the legislative body of the municipality. It enacts ordinances, approves resolutions, and appropriates funds for the general welfare of Castilla in accordance with the Local Government Code.',
     // Sourced 2026-08-23: identified in Sorsogon State University institutional material.
-    head: { name: 'Reynaldo C. Marchan', position: 'Sangguniang Bayan Secretary', isPlaceholder: false },
+    head: {
+      name: 'Reynaldo C. Marchan',
+      position: 'Sangguniang Bayan Secretary',
+      isPlaceholder: false,
+    },
     services: [
       'Enactment of municipal ordinances and resolutions',
       'Review of barangay ordinances',
@@ -92,12 +123,17 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     slug: 'municipal-administrator',
     name: 'Municipal Administrator',
     category: 'administrative',
-    shortDescription: 'Coordinates the day-to-day management of municipal departments on behalf of the Mayor.',
+    shortDescription:
+      'Coordinates the day-to-day management of municipal departments on behalf of the Mayor.',
     aboutText:
       'The Office of the Municipal Administrator assists the Mayor in coordinating the activities of all municipal departments, ensuring efficient delivery of services and implementation of programs.',
     // Sourced 2026-08-23: LGU Citizen's Charter, corroborated by a PSA
     // Sorsogon publication (2024 CBMS presentation, August 2025).
-    head: { name: 'Atty. Marilyn D. Valino', position: 'Municipal Administrator', isPlaceholder: false },
+    head: {
+      name: 'Atty. Marilyn D. Valino',
+      position: 'Municipal Administrator',
+      isPlaceholder: false,
+    },
     services: [
       'Inter-office coordination and program monitoring',
       'Administrative policy implementation',
@@ -130,13 +166,19 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       'Disbursement processing for municipal obligations',
     ],
     contact: placeholderContact('Castilla Municipal Hall, 1st Floor, Cumadcad, Castilla, Sorsogon'),
-    relatedOfficeSlugs: ['municipal-assessor', 'municipal-accounting', 'municipal-budget', 'business-permits-licensing'],
+    relatedOfficeSlugs: [
+      'municipal-assessor',
+      'municipal-accounting',
+      'municipal-budget',
+      'business-permits-licensing',
+    ],
   },
   {
     slug: 'municipal-assessor',
     name: "Municipal Assessor's Office",
     category: 'finance',
-    shortDescription: 'Handles the appraisal and assessment of real properties for taxation purposes.',
+    shortDescription:
+      'Handles the appraisal and assessment of real properties for taxation purposes.',
     aboutText:
       'The Municipal Assessor’s Office appraises and assesses real properties within Castilla, maintains property records, and issues certifications used for taxation and land transactions.',
     // Sourced 2026-08-23 from the LGU Citizen's Charter.
@@ -186,7 +228,11 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     aboutText:
       'The Municipal Budget Office prepares the annual and supplemental budgets of the municipality and monitors the utilization of appropriated funds across departments.',
     // Sourced 2026-08-23 from the LGU Citizen's Charter.
-    head: { name: 'Roselyn M. Marbella', position: 'Municipal Budget Officer', isPlaceholder: false },
+    head: {
+      name: 'Roselyn M. Marbella',
+      position: 'Municipal Budget Officer',
+      isPlaceholder: false,
+    },
     services: [
       'Preparation of the annual municipal budget',
       'Budget monitoring and utilization reports',
@@ -199,13 +245,18 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       hours: 'Monday–Friday, 8:00 AM–5:00 PM (no noon break)',
       isPlaceholder: false,
     },
-    relatedOfficeSlugs: ['municipal-accounting', 'municipal-treasurer', 'municipal-planning-development'],
+    relatedOfficeSlugs: [
+      'municipal-accounting',
+      'municipal-treasurer',
+      'municipal-planning-development',
+    ],
   },
   {
     slug: 'municipal-planning-development',
     name: 'Municipal Planning and Development Office',
     category: 'development',
-    shortDescription: 'Formulates the municipality’s development plans, programs, and investment priorities.',
+    shortDescription:
+      'Formulates the municipality’s development plans, programs, and investment priorities.',
     aboutText:
       'The Municipal Planning and Development Office formulates integrated development plans, monitors program implementation, and coordinates local development projects for Castilla.',
     // Sourced 2026-08-23: LGU Citizen's Charter, corroborated by a PSA
@@ -258,11 +309,16 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     slug: 'municipal-civil-registrar',
     name: 'Municipal Civil Registrar',
     category: 'administrative',
-    shortDescription: 'Handles civil registration records including birth, marriage, and death certificates.',
+    shortDescription:
+      'Handles civil registration records including birth, marriage, and death certificates.',
     aboutText:
       'The Office of the Municipal Civil Registrar registers vital events — births, marriages, and deaths — occurring within Castilla, and issues certified civil registry documents.',
     // Sourced 2026-08-23 from the LGU Citizen's Charter.
-    head: { name: 'Cecilia B. Loterte', position: 'Municipal Civil Registrar', isPlaceholder: false },
+    head: {
+      name: 'Cecilia B. Loterte',
+      position: 'Municipal Civil Registrar',
+      isPlaceholder: false,
+    },
     services: [
       'Registration of births, marriages, and deaths',
       'Issuance of certified civil registry documents',
@@ -281,24 +337,34 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     slug: 'municipal-health',
     name: 'Municipal Health Office',
     category: 'social-services',
-    shortDescription: 'Delivers primary healthcare services and public health programs to residents.',
+    shortDescription:
+      'Delivers primary healthcare services and public health programs to residents.',
     aboutText:
       'The Municipal Health Office provides primary healthcare, maternal and child health services, disease prevention programs, and sanitation oversight for the municipality.',
     // Sourced 2026-08-23 via web search.
-    head: { name: 'Dr. Melquiades D. Boque', position: 'Municipal Health Officer', isPlaceholder: false },
+    head: {
+      name: 'Dr. Melquiades D. Boque',
+      position: 'Municipal Health Officer',
+      isPlaceholder: false,
+    },
     services: [
       'Primary care and outpatient consultation',
       'Maternal, child, and immunization programs',
       'Public health and sanitation inspection',
     ],
     contact: placeholderContact(),
-    relatedOfficeSlugs: ['municipal-social-welfare', 'municipal-civil-registrar', 'municipal-disaster-risk-reduction'],
+    relatedOfficeSlugs: [
+      'municipal-social-welfare',
+      'municipal-civil-registrar',
+      'municipal-disaster-risk-reduction',
+    ],
   },
   {
     slug: 'municipal-social-welfare',
     name: 'Municipal Social Welfare and Development Office',
     category: 'social-services',
-    shortDescription: 'Administers social welfare programs for vulnerable and disadvantaged residents.',
+    shortDescription:
+      'Administers social welfare programs for vulnerable and disadvantaged residents.',
     aboutText:
       'The Municipal Social Welfare and Development Office implements assistance programs for children, senior citizens, persons with disabilities, and families in crisis, and coordinates with national social welfare agencies.',
     // Sourced 2026-08-23 from the LGU Citizen's Charter.
@@ -327,7 +393,8 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     slug: 'municipal-agriculture',
     name: 'Municipal Agriculture Office',
     category: 'development',
-    shortDescription: 'Supports local farmers and fisherfolk through extension services and programs.',
+    shortDescription:
+      'Supports local farmers and fisherfolk through extension services and programs.',
     aboutText:
       'The Municipal Agriculture Office provides technical assistance, extension services, and program support to farmers and fisherfolk to improve agricultural productivity in Castilla.',
     // Sourced 2026-08-23 from an official LGU Castilla document (Agricultures.pdf).
@@ -338,13 +405,17 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       'Distribution of program inputs and assistance',
     ],
     contact: placeholderContact(),
-    relatedOfficeSlugs: ['municipal-environment-natural-resources', 'municipal-planning-development'],
+    relatedOfficeSlugs: [
+      'municipal-environment-natural-resources',
+      'municipal-planning-development',
+    ],
   },
   {
     slug: 'municipal-environment-natural-resources',
     name: 'Municipal Environment and Natural Resources Office',
     category: 'development',
-    shortDescription: 'Oversees environmental protection, waste management, and natural resource programs.',
+    shortDescription:
+      'Oversees environmental protection, waste management, and natural resource programs.',
     aboutText:
       'The Municipal Environment and Natural Resources Office implements environmental protection measures, solid waste management, and natural resource conservation programs within the municipality.',
     // Sourced 2026-08-23 from the LGU Citizen's Charter.
@@ -394,19 +465,28 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       hours: 'Administrative: Monday–Friday, 8:00 AM–5:00 PM · Emergency response: 24/7',
       isPlaceholder: false,
     },
-    relatedOfficeSlugs: ['municipal-health', 'municipal-social-welfare', 'municipal-environment-natural-resources'],
+    relatedOfficeSlugs: [
+      'municipal-health',
+      'municipal-social-welfare',
+      'municipal-environment-natural-resources',
+    ],
   },
   {
     slug: 'business-permits-licensing',
     name: 'Business Permits and Licensing Office',
     category: 'administrative',
-    shortDescription: 'Processes business permit applications, renewals, and licensing requirements.',
+    shortDescription:
+      'Processes business permit applications, renewals, and licensing requirements.',
     aboutText:
       'The Business Permits and Licensing Office processes the issuance and renewal of business permits, coordinates with regulatory offices for evaluation, and maintains the municipal business registry.',
     // Sourced 2026-08-23: named on an official Castilla business-permit
     // application form and the LGU Citizen's Charter (as Administrative
     // Assistant II handling BPLO review/validation).
-    head: { name: 'Loriejane N. Excija', position: 'Business Permits and Licensing Officer', isPlaceholder: false },
+    head: {
+      name: 'Loriejane N. Excija',
+      position: 'Business Permits and Licensing Officer',
+      isPlaceholder: false,
+    },
     services: [
       'New business permit application processing',
       'Annual business permit renewal',
@@ -419,7 +499,8 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     slug: 'human-resource-management',
     name: 'Human Resource Management Office',
     category: 'administrative',
-    shortDescription: 'Manages municipal personnel administration, recruitment, and employee welfare.',
+    shortDescription:
+      'Manages municipal personnel administration, recruitment, and employee welfare.',
     aboutText:
       'The Human Resource Management Office administers recruitment, employee records, benefits, and personnel development programs for municipal government employees.',
     // Sourced 2026-08-23: LGU Citizen's Charter, corroborated by recent
@@ -447,7 +528,8 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
     slug: 'general-services',
     name: 'General Services Office',
     category: 'administrative',
-    shortDescription: 'Manages municipal property, procurement support, and general facilities upkeep.',
+    shortDescription:
+      'Manages municipal property, procurement support, and general facilities upkeep.',
     aboutText:
       'The General Services Office manages municipal government property and equipment, supports procurement processes, and maintains municipal facilities and vehicles.',
     head: placeholderHead('General Services Officer'),

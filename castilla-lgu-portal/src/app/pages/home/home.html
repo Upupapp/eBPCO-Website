@@ -22,8 +22,9 @@
     <p class="hero-province">Province of {{ provinceName }}</p>
 
     <p class="hero-copy">
-      Welcome to the official information portal of the Municipality of Castilla, Sorsogon. Learn who leads the
-      municipality, which offices serve residents and businesses, and how to reach LGU Castilla.
+      Welcome to the official information portal of the Municipality of Castilla, Sorsogon. Learn
+      who leads the municipality, which offices serve residents and businesses, and how to reach LGU
+      Castilla.
     </p>
 
     <div class="hero-ctas">
@@ -65,7 +66,9 @@
         <span class="glance-heading-line-1">Municipality of</span>
         <span class="glance-heading-line-2">{{ municipalityShortName }}</span>
       </h2>
-      <p class="glance-lede">A coastal municipality in the province of Sorsogon, Bicol Region, Philippines.</p>
+      <p class="glance-lede">
+        A coastal municipality in the province of Sorsogon, Bicol Region, Philippines.
+      </p>
 
       <!--
         Architectural engraving-style treatment of the actual hero photo
@@ -81,28 +84,32 @@
     </div>
 
     <div class="glance-data">
-      <img class="glance-watermark" src="assets/logos/castilla-seal.png" alt="" aria-hidden="true" />
+      <img
+        class="glance-watermark"
+        src="assets/logos/castilla-seal.png"
+        alt=""
+        aria-hidden="true"
+      />
 
       <dl class="glance-grid reveal">
         @for (field of profileFields; track field.label) {
           <div class="glance-field">
-            <span class="glance-field-icon"><app-icon [name]="fieldIcon(field.label)" [size]="18" /></span>
+            <span class="glance-field-icon"
+              ><app-icon [name]="fieldIcon(field.label)" [size]="18"
+            /></span>
             <div class="glance-field-text">
               <dt>{{ field.label }}</dt>
+              <!--
+                Fields carrying a `count` in municipality.data.ts animate up to
+                it and render their own `countSuffix`; everything else renders
+                `value` verbatim. No field label is special-cased here, so the
+                data file stays the only place these numbers are stated.
+              -->
               <dd>
-                @switch (field.label) {
-                  @case ('Population') {
-                    {{ populationCount() | number: '1.0-0' }} (2020 Census)
-                  }
-                  @case ('Land Area') {
-                    {{ landAreaCount() | number: '1.2-2' }} km²
-                  }
-                  @case ('Number of Barangays') {
-                    {{ barangaysCount() | number: '1.0-0' }}
-                  }
-                  @default {
-                    {{ field.value }}
-                  }
+                @if (field.count !== undefined) {
+                  {{ countValue(field) | number: countFormat(field) }} {{ field.countSuffix }}
+                } @else {
+                  {{ field.value }}
                 }
               </dd>
             </div>

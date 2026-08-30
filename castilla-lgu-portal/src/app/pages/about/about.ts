@@ -2,7 +2,12 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, inject } from '@angula
 import { ReadMore } from '../../shared/read-more/read-more';
 import { Seal } from '../../shared/seal/seal';
 import { Icon } from '../../shared/icon/icon';
-import { ABOUT_OVERVIEW, HISTORY_TEXT, MISSION_TEXT, SEAL_DESCRIPTION } from '../../core/data/municipality.data';
+import {
+  ABOUT_OVERVIEW,
+  HISTORY_TEXT,
+  MISSION_TEXT,
+  SEAL_DESCRIPTION,
+} from '../../core/data/municipality.data';
 
 // The official Vision statement was only found as a truncated search-result
 // fragment ("A premier agri-ecotourism…") — the official page blocks
@@ -46,7 +51,12 @@ export class About implements AfterViewInit, OnDestroy {
     const targets = this.host.nativeElement.querySelectorAll<HTMLElement>('.reveal');
     if (!targets.length) return;
 
-    if (this.reducedMotion) {
+    // Reveal everything at once when the effect can't or shouldn't run.
+    // The IntersectionObserver check is not defensive padding: this method
+    // runs first in ngAfterViewInit, so constructing one unguarded threw
+    // before the counters and parallax were ever set up, blanking the page's
+    // headline numbers rather than merely skipping an animation.
+    if (this.reducedMotion || typeof IntersectionObserver === 'undefined') {
       targets.forEach((el) => el.classList.add('in-view'));
       return;
     }

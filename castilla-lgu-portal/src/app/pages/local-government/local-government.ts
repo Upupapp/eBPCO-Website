@@ -1,6 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, inject } from '@angular/core';
 import { SectionHeading } from '../../shared/section-heading/section-heading';
-import { MAYOR, VICE_MAYOR, SB_MEMBERS, SB_EXOFFICIO_MEMBERS } from '../../core/data/officials.data';
+import {
+  MAYOR,
+  VICE_MAYOR,
+  SB_MEMBERS,
+  SB_EXOFFICIO_MEMBERS,
+} from '../../core/data/officials.data';
 
 @Component({
   selector: 'app-local-government',
@@ -40,7 +45,12 @@ export class LocalGovernment implements AfterViewInit, OnDestroy {
     const targets = this.host.nativeElement.querySelectorAll<HTMLElement>('.reveal');
     if (!targets.length) return;
 
-    if (this.reducedMotion) {
+    // Reveal everything at once when the effect can't or shouldn't run.
+    // The IntersectionObserver check is not defensive padding: this method
+    // runs first in ngAfterViewInit, so constructing one unguarded threw
+    // before the counters and parallax were ever set up, blanking the page's
+    // headline numbers rather than merely skipping an animation.
+    if (this.reducedMotion || typeof IntersectionObserver === 'undefined') {
       targets.forEach((el) => el.classList.add('in-view'));
       return;
     }
