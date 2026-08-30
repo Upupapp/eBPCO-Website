@@ -1,383 +1,500 @@
-// Dashboard — redesigned for proportion/hierarchy per the agreed civic
-// design direction. Scoped tokens use exact hex values from that brief
-// rather than the app's slightly-different global tokens, so this page's
-// palette matches precisely without touching shared variables used
-// elsewhere. Font is intentionally never set here — it inherits the
-// project's existing font-family from html/body in styles.scss.
+// Dashboard content — restyled to a compact, disciplined government-service
+// layout per the agreed reference screenshot. Scoped tokens use the exact
+// hex values from that brief rather than the app's slightly-different global
+// tokens, so this page's palette matches precisely without rippling into
+// shared variables used elsewhere. The sidebar itself is intentionally
+// untouched; the page background lives in the shared app-shell.component.scss
+// (.ds-main) so it's consistent across every routed page, not just this one.
 :host {
   display: block;
-  --dk-red: #d7192d;
-  --dk-red-dark: #b31626;
-  --dk-ink: #101828;
-  --dk-ink-secondary: #475467;
-  --dk-body: #667085;
-  --dk-muted: #98a2b3;
-  --dk-border: #eaecf0;
-  --dk-amber: #e08a00;
-  --dk-green: #168a45;
-  --dk-blue: #3178c6;
-  --dk-red-soft: #fff0f1;
-  --dk-amber-soft: #fff7e7;
-  --dk-green-soft: #eaf7ee;
-  --dk-blue-soft: #eef5fc;
+  --ink-900: #111b2d;
+  --ink-800: #172137;
+  --ink-700: #26364d;
+  --ink-600: #4b5c74;
+  --ink-500: #7c8aa0;
+  --ink-400: #8fa0b4;
+
+  --border: #e5e9ef;
+  --divider: #edf0f4;
+
+  --surface: #ffffff;
+
+  --brand-red: #e5162b;
+  --brand-red-dark: #cf1225;
+  --brand-red-soft: #fff0f2;
+
+  --blue: #1e73d1;
+  --blue-soft: #eef6ff;
+
+  --orange: #e58a00;
+  --orange-soft: #fff7e8;
+
+  --green: #129548;
+  --green-soft: #ecf9f0;
+
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--ink-900);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-.dk-page {
-  max-width: 1480px;
+// The page background (gradient + soft accent blobs) now lives on the
+// shared .ds-main wrapper in app-shell.component.scss, so every routed
+// page under the sidebar shares it — not just this one.
+.dashboard-page {
+  display: block;
   width: 100%;
+}
+
+.dashboard-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 40px 48px 56px;
+  padding: 27px 24px 28px 36px;
+  // Container query (not @media) — the sidebar is a fixed 290px column,
+  // so viewport width is a poor proxy for the space actually available
+  // here. Sizing off this element's own inline size keeps the dashboard
+  // responsive without touching the (out-of-scope) sidebar.
+  container-type: inline-size;
+  container-name: dashboard-content;
 }
 
 // ---------------------------------------------------------------------------
-// Header
+// Hero / welcome row
 // ---------------------------------------------------------------------------
-.dk-header {
+.dashboard-hero {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  gap: 32px;
-  flex-wrap: wrap;
-  opacity: 0;
-  animation: dk-fade-rise 450ms ease both;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 26px;
 }
 
-.dk-heading {
+.hero-heading {
   margin: 0;
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.1;
-  color: var(--dk-ink);
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--ink-900);
 }
-.dk-subtitle {
+.hero-wave {
+  display: inline-block;
+  font-size: 22px;
+  margin-left: 6px;
+}
+.hero-subtitle {
   margin: 6px 0 0;
   font-size: 13px;
-  color: var(--dk-body);
+  line-height: 1.45;
+  font-weight: 400;
+  color: var(--ink-500);
 }
 
-.dk-header-actions {
+.hero-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  padding-top: 5px;
   flex-shrink: 0;
 }
 
-.dk-btn-primary,
-.dk-btn-secondary {
+.action-btn {
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 7px;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  height: 54px;
-  padding: 0 24px;
-  border-radius: 11px;
-  font-size: 14px;
-  font-weight: 700;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
 }
-.dk-btn-primary svg,
-.dk-btn-secondary svg { width: 18px; height: 18px; flex-shrink: 0; }
+.action-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-.dk-btn-primary {
-  background: var(--dk-red);
+.action-btn.primary {
+  min-width: 134px;
+  background: var(--brand-red);
+  border: 1px solid var(--brand-red);
   color: #ffffff;
-  border: none;
+  box-shadow: 0 5px 12px rgba(229, 22, 43, 0.12);
 }
-.dk-btn-primary:hover { background: var(--dk-red-dark); transform: translateY(-1px); text-decoration: none; }
+.action-btn.primary:hover {
+  background: var(--brand-red-dark);
+  border-color: var(--brand-red-dark);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
 
-.dk-btn-secondary {
+.action-btn.secondary {
+  min-width: 139px;
   background: #ffffff;
-  border: 1px solid #d7dbe2;
-  color: var(--dk-ink);
+  border: 1px solid #dce2e9;
+  color: #192339;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
 }
-.dk-btn-secondary:hover { background: #f9fafb; transform: translateY(-1px); text-decoration: none; }
+.action-btn.secondary:hover {
+  background: #fafbfc;
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.action-btn.secondary svg { color: #26364d; }
 
 // ---------------------------------------------------------------------------
-// KPI grid
+// KPI cards
 // ---------------------------------------------------------------------------
-.dk-kpi-grid {
+.kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px;
-  margin-top: 32px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
-.dk-kpi {
+.kpi-card {
   position: relative;
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  align-items: center;
-  column-gap: 18px;
-  height: 152px;
-  padding: 24px 24px 24px 28px;
-  background: #ffffff;
-  border: 1px solid #e7e9ee;
-  border-radius: 15px;
-  box-shadow: 0 5px 16px rgba(16, 24, 40, 0.055);
+  min-height: 138px;
+  border-radius: 9px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.045), 0 1px 2px rgba(15, 23, 42, 0.025);
   overflow: hidden;
-  opacity: 0;
-  animation: dk-fade-rise-sm 450ms ease both;
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  padding: 20px 16px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
-.dk-kpi:nth-child(1) { animation-delay: 60ms; }
-.dk-kpi:nth-child(2) { animation-delay: 110ms; }
-.dk-kpi:nth-child(3) { animation-delay: 160ms; }
-.dk-kpi:nth-child(4) { animation-delay: 210ms; }
-
-.dk-kpi:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.075);
+.kpi-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
 }
-
-.dk-kpi::before {
+.kpi-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
 }
-.dk-kpi-red::before { background: var(--dk-red); }
-.dk-kpi-blue::before { background: var(--dk-blue); }
-.dk-kpi-amber::before { background: var(--dk-amber); }
-.dk-kpi-green::before { background: var(--dk-green); }
+.kpi-card.theme-red::before { background: #f21835; }
+.kpi-card.theme-blue::before { background: #2578d7; }
+.kpi-card.theme-orange::before { background: #e89000; }
+.kpi-card.theme-green::before { background: #159447; }
 
-// ---------------------------------------------------------------------------
-// KPI icon — layered "halo + surface + icon" construction for a restrained
-// dimensional feel (soft gradient surface, inset highlight, drop-shadowed
-// glyph) rather than a flat tinted circle.
-// ---------------------------------------------------------------------------
-.dk-kpi-icon-wrap {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  flex: 0 0 80px;
+.kpi-main {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 15px;
 }
-.dk-kpi-halo {
-  position: absolute;
-  width: 78px;
-  height: 78px;
+
+.kpi-icon-shell {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
   border-radius: 50%;
-  filter: blur(10px);
-  opacity: 0.22;
-  transition: opacity 200ms ease;
-}
-.dk-kpi-icon-surface {
-  position: relative;
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  transition: transform 200ms ease, box-shadow 200ms ease;
-}
-.dk-kpi-icon { width: 38px; height: 38px; filter: drop-shadow(0 4px 4px rgba(16, 24, 40, 0.1)); }
-
-.dk-kpi:hover .dk-kpi-icon-surface {
-  transform: translateY(-2px) scale(1.025);
-  box-shadow: 0 10px 22px rgba(16, 24, 40, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-.dk-kpi:hover .dk-kpi-halo { opacity: 0.3; }
-
-.dk-kpi-red .dk-kpi-halo { background: rgba(200, 30, 44, 0.12); }
-.dk-kpi-red .dk-kpi-icon-surface { background: linear-gradient(145deg, #fff8f8 0%, #fcebed 100%); border: 1px solid rgba(200, 30, 44, 0.1); }
-
-.dk-kpi-blue .dk-kpi-halo { background: rgba(49, 120, 198, 0.12); }
-.dk-kpi-blue .dk-kpi-icon-surface { background: linear-gradient(145deg, #f8fbff 0%, #eef5fc 100%); border: 1px solid rgba(49, 120, 198, 0.1); }
-
-.dk-kpi-amber .dk-kpi-halo { background: rgba(224, 138, 0, 0.13); }
-.dk-kpi-amber .dk-kpi-icon-surface { background: linear-gradient(145deg, #fffbf3 0%, #fff4dd 100%); border: 1px solid rgba(224, 138, 0, 0.1); }
-
-.dk-kpi-green .dk-kpi-halo { background: rgba(22, 138, 69, 0.12); }
-.dk-kpi-green .dk-kpi-icon-surface { background: linear-gradient(145deg, #f8fcf9 0%, #eaf7ee 100%); border: 1px solid rgba(22, 138, 69, 0.1); }
-
-.dk-kpi-content { min-width: 0; }
-.dk-kpi-label {
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.32;
-  color: var(--dk-ink-secondary);
-}
-.dk-kpi-value {
-  margin-top: 7px;
-  font-size: 26px;
-  font-weight: 700;
-  line-height: 1;
-}
-.dk-kpi-red .dk-kpi-value { color: var(--dk-red-dark); }
-.dk-kpi-blue .dk-kpi-value { color: #1d4a86; }
-.dk-kpi-amber .dk-kpi-value { color: var(--dk-amber); }
-.dk-kpi-green .dk-kpi-value { color: var(--dk-green); }
-
-// ---------------------------------------------------------------------------
-// Lower grid / panels
-// ---------------------------------------------------------------------------
-.dk-lower-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(340px, 0.95fr);
-  gap: 28px;
-  margin-top: 32px;
+  place-items: center;
+}
+.kpi-icon-core {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.6);
+}
+.kpi-icon-core svg { width: 23px; height: 23px; }
+
+.theme-red .kpi-icon-shell { background: #fff1f3; border: 1px solid #ffd7dd; box-shadow: 0 6px 14px rgba(229, 22, 43, 0.07); color: var(--brand-red); }
+.theme-blue .kpi-icon-shell { background: #eef6ff; border: 1px solid #d7e8ff; box-shadow: 0 6px 14px rgba(30, 115, 209, 0.07); color: var(--blue); }
+.theme-orange .kpi-icon-shell { background: #fff7e8; border: 1px solid #ffe2ae; box-shadow: 0 6px 14px rgba(229, 138, 0, 0.07); color: var(--orange); }
+.theme-green .kpi-icon-shell { background: #ecf9f0; border: 1px solid #d2f0dc; box-shadow: 0 6px 14px rgba(18, 149, 72, 0.07); color: var(--green); }
+
+.kpi-copy { min-width: 0; }
+.kpi-label {
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--ink-600);
+}
+.kpi-value {
+  margin-top: 4px;
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 700;
+}
+.theme-red .kpi-value { color: #d51129; }
+.theme-blue .kpi-value { color: #1765ba; }
+.theme-orange .kpi-value { color: #d98300; }
+.theme-green .kpi-value { color: #138a43; }
+
+.kpi-footer {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--divider);
+}
+.kpi-footer-link,
+.kpi-footer-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-400);
+  text-decoration: none;
+}
+.kpi-footer-link { color: var(--brand-red); font-weight: 500; }
+.kpi-footer-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+.kpi-footer-link svg,
+.kpi-footer-text svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+// ---------------------------------------------------------------------------
+// Lower two-column section
+// ---------------------------------------------------------------------------
+.dashboard-lower-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.72fr) minmax(270px, 1fr);
+  gap: 14px;
+  align-items: stretch;
 }
 
-.dk-panel {
-  background: #ffffff;
-  border: 1px solid var(--dk-border);
-  border-radius: 16px;
-  box-shadow: 0 5px 18px rgba(16, 24, 40, 0.045);
-  padding: 27px;
-  min-height: 370px;
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  padding: 18px;
+  min-height: 250px;
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  animation: dk-fade 500ms ease 260ms both;
 }
 
-.dk-panel-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-}
-.dk-panel-icon {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: var(--dk-red-soft);
-  color: var(--dk-red);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.dk-panel-icon svg { width: 21px; height: 21px; }
-.dk-panel-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--dk-ink);
-}
-
-.dk-app-list,
-.dk-notif-list { flex: 1; }
-
-.dk-app-row {
+.panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 20px 0;
-  border-bottom: 1px solid var(--dk-border);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.panel-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.panel-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 8px;
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.panel-icon svg { width: 19px; height: 19px; }
+.panel-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+  color: var(--ink-800);
+}
+.panel-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--brand-red);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.panel-view-all:hover { text-decoration: underline; text-underline-offset: 3px; }
+.panel-view-all svg { width: 13px; height: 13px; }
+
+.empty-state {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--ink-500);
+}
+.empty-state a { color: var(--brand-red); font-weight: 600; }
+
+// ---------------------------------------------------------------------------
+// Active applications
+// ---------------------------------------------------------------------------
+.application-list { flex: 1; }
+
+.application-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--divider);
   text-decoration: none;
   color: inherit;
+  transition: background 120ms ease;
 }
-.dk-app-list .dk-app-row:last-child { border-bottom: none; }
-.dk-app-info { min-width: 0; }
-.dk-app-title {
-  font-size: 15px;
+.application-list .application-row:first-child { border-top: none; padding-top: 0; }
+.application-row:hover { background: #fcfdfe; }
+
+.application-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+}
+.application-icon svg { width: 24px; height: 24px; }
+
+.application-details { min-width: 0; }
+.application-title {
+  font-size: 14px;
+  line-height: 1.35;
   font-weight: 600;
-  color: var(--dk-ink);
+  color: var(--ink-800);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.dk-app-meta {
-  margin-top: 4px;
+.application-meta {
+  margin-top: 3px;
   font-size: 12.5px;
-  color: var(--dk-body);
+  line-height: 1.45;
+  font-weight: 400;
+  color: #7f8ea3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.application-date {
+  margin-top: 4px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--ink-400);
 }
 
-.dk-notif-row {
-  padding: 18px 0;
-  border-bottom: 1px solid var(--dk-border);
+// Status chip — restyles the shared <app-status-pill>'s global .badge classes,
+// scoped to this component's host only, so the rest of the app keeps the
+// original badge look.
+:host ::ng-deep .application-row .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 25px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 600;
+  white-space: nowrap;
+  border: none;
 }
-.dk-notif-list .dk-notif-row:last-child { border-bottom: none; }
-.dk-notif-title {
+:host ::ng-deep .application-row .badge-primary { background: #ffe7eb; color: #d71932; }
+:host ::ng-deep .application-row .badge-green { background: #dcf7e6; color: #188340; }
+:host ::ng-deep .application-row .badge-blue { background: var(--blue-soft); color: var(--blue); }
+:host ::ng-deep .application-row .badge-amber { background: var(--orange-soft); color: var(--orange); }
+:host ::ng-deep .application-row .badge-red { background: var(--brand-red-soft); color: var(--brand-red); }
+:host ::ng-deep .application-row .badge-gray { background: #f1f3f7; color: var(--ink-600); }
+
+// ---------------------------------------------------------------------------
+// Recent notifications
+// ---------------------------------------------------------------------------
+.notification-list { flex: 1; }
+
+.notification-row {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  column-gap: 11px;
+  padding: 16px 0;
+  border-top: 1px solid var(--divider);
+}
+.notification-list .notification-row:first-child { border-top: none; padding-top: 0; }
+
+.notification-dot {
+  margin-top: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff2444;
+  box-shadow: 0 0 0 4px var(--brand-red-soft);
+}
+.notification-dot.is-read { background: var(--ink-400); box-shadow: 0 0 0 4px #f1f3f7; }
+
+.notification-content { min-width: 0; }
+.notification-title {
   font-size: 14px;
   font-weight: 600;
-  color: var(--dk-ink);
+  line-height: 1.35;
+  color: #1a2439;
 }
-.dk-notif-title.is-read { color: var(--dk-muted); }
-.dk-notif-body {
-  margin-top: 4px;
-  font-size: 13px;
+.notification-title.is-read { color: var(--ink-500); font-weight: 500; }
+.notification-body {
+  margin-top: 5px;
+  font-size: 12.5px;
   line-height: 1.5;
-  color: var(--dk-body);
+  color: #7b8ba0;
 }
-.dk-notif-date {
+.notification-date {
   margin-top: 4px;
-  font-size: 12.5px;
-  color: var(--dk-muted);
+  font-size: 11.5px;
+  color: var(--ink-400);
 }
-
-.dk-panel-footer {
-  margin-top: 16px;
-  text-align: right;
-}
-.dk-view-all {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--dk-red);
-  text-decoration: none;
-}
-.dk-view-all:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 // ---------------------------------------------------------------------------
-// Entrance keyframes
+// Focus
 // ---------------------------------------------------------------------------
-@keyframes dk-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes dk-fade-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes dk-fade-rise-sm { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.action-btn:focus-visible,
+.kpi-footer-link:focus-visible,
+.panel-view-all:focus-visible,
+.application-row:focus-visible {
+  outline: 2px solid rgba(229, 22, 43, 0.35);
+  outline-offset: 2px;
+}
 
 // ---------------------------------------------------------------------------
-// Responsive
+// Responsive — container queries against .dashboard-content's own inline
+// size (see container-type above), since the fixed-width sidebar means
+// viewport width isn't a reliable proxy for the space available here.
 // ---------------------------------------------------------------------------
-@media (min-width: 1500px) {
-  .dk-page { padding-left: 52px; padding-right: 52px; }
+@container dashboard-content (max-width: 900px) {
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (max-width: 1400px) {
-  // Keeps 1366×768 from feeling cramped without shrinking type excessively.
-  .dk-page { padding-top: 32px; }
-  .dk-kpi { height: 142px; }
-  .dk-panel { min-height: 330px; padding: 24px; }
+@container dashboard-content (max-width: 720px) {
+  .dashboard-lower-grid { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 1199px) and (min-width: 768px) {
-  .dk-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .dk-lower-grid { grid-template-columns: 1fr; }
-  .dk-kpi-icon-wrap { width: 72px; height: 72px; flex-basis: 72px; }
-  .dk-kpi-halo { width: 70px; height: 70px; }
-  .dk-kpi-icon-surface { width: 62px; height: 62px; }
-  .dk-kpi-icon { width: 34px; height: 34px; }
+@container dashboard-content (max-width: 560px) {
+  .dashboard-content { padding: 24px 18px; }
+
+  .dashboard-hero { flex-direction: column; }
+  .hero-actions { width: 100%; }
+  .action-btn { flex: 1; }
+
+  .application-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .application-row app-status-pill {
+    grid-column: 2;
+    margin-top: 8px;
+    justify-self: start;
+  }
 }
 
-@media (max-width: 899px) {
-  .dk-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .dk-lower-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 767px) {
-  .dk-page { padding: 20px; }
-  .dk-header { flex-direction: column; }
-  .dk-header-actions { width: 100%; }
-  .dk-btn-primary, .dk-btn-secondary { flex: 1; justify-content: center; }
-
-  .dk-kpi-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 24px; }
-  .dk-kpi { grid-template-columns: 66px 1fr; height: auto; min-height: 128px; padding: 18px; column-gap: 16px; }
-  .dk-kpi-icon-wrap { width: 66px; height: 66px; flex-basis: 66px; }
-  .dk-kpi-halo { width: 64px; height: 64px; }
-  .dk-kpi-icon-surface { width: 58px; height: 58px; }
-  .dk-kpi-icon { width: 31px; height: 31px; }
-  .dk-kpi-value { font-size: 24px; }
-
-  .dk-lower-grid { grid-template-columns: 1fr; gap: 20px; margin-top: 24px; }
-  .dk-panel { padding: 20px; min-height: 0; }
+@container dashboard-content (max-width: 420px) {
+  .kpi-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dk-header, .dk-kpi, .dk-panel { opacity: 1; transform: none; animation: none; }
-  .dk-kpi, .dk-btn-primary, .dk-btn-secondary, .dk-kpi-icon-surface, .dk-kpi-halo { transition: none; }
+  .action-btn,
+  .kpi-card,
+  .application-row {
+    transition: none;
+  }
 }

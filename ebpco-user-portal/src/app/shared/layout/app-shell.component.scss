@@ -117,16 +117,50 @@
   width: calc(100% - 16px);
 }
 
-.ds-logout { color: var(--ds-ink-secondary); }
-.ds-logout:hover { background: #f9fafb; }
+.ds-logout { color: var(--ds-red); }
+.ds-logout:hover { background: #fff5f6; color: var(--ds-red-dark); }
 
 // ---------------------------------------------------------------------------
 // Main column
 // ---------------------------------------------------------------------------
 .ds-main {
+  position: relative;
+  overflow: hidden;
   flex: 1;
   min-width: 0;
-  background: radial-gradient(circle at 85% 10%, rgba(200, 30, 44, 0.025), transparent 32%), #f8f9fb;
+  background: linear-gradient(135deg, #fff 0%, #fff 57%, #fffafb 78%, #fff5f6 100%);
+}
+
+// Soft radial accents — shared across every routed page (dashboard,
+// businesses, permits, applications, documents, payments, notifications,
+// profile, help). Gradients that fade to fully transparent, not a
+// clip-path shape, so there's no hard edge for overflow:hidden to crop.
+.ds-main::before {
+  content: '';
+  position: absolute;
+  width: 640px;
+  height: 420px;
+  right: -220px;
+  top: -140px;
+  background: radial-gradient(closest-side, rgba(220, 38, 38, 0.06), rgba(220, 38, 38, 0) 100%);
+  pointer-events: none;
+}
+.ds-main::after {
+  content: '';
+  position: absolute;
+  width: 480px;
+  height: 340px;
+  left: -200px;
+  bottom: -200px;
+  background: radial-gradient(closest-side, rgba(220, 38, 38, 0.045), rgba(220, 38, 38, 0) 100%);
+  pointer-events: none;
+}
+// The routed page component renders as router-outlet's next sibling —
+// lift it above the decorative blobs above (topbar already has its own
+// position: sticky; z-index: 5 below).
+.ds-main > router-outlet + * {
+  position: relative;
+  z-index: 1;
 }
 
 .ds-topbar {
