@@ -44,6 +44,7 @@ function headFromOfficial(official: Official): OfficeHead {
     name: official.name,
     position: official.position,
     isPlaceholder: official.isPlaceholder,
+    initials: official.initials,
   };
 }
 
