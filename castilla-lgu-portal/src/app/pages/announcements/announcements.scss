@@ -1,0 +1,67 @@
+@use '../../shared/styles/tokens' as *;
+
+.page-intro {
+  padding: 3.2rem 1.5rem 4rem;
+  background: $color-surface;
+}
+
+.page-intro-inner {
+  max-width: 62rem;
+  margin: 0 auto;
+}
+
+.notice {
+  margin-top: 1.6rem;
+  padding: 1.15rem 1.35rem;
+  border-left: 3px solid $color-gold-600;
+  background: $color-gold-50;
+  border-radius: $radius-sm;
+  color: $color-ink-600;
+  line-height: 1.6;
+}
+
+.announcement-list {
+  list-style: none;
+  margin: 1.8rem 0 0;
+  padding: 0;
+}
+
+.announcement {
+  padding: 1.4rem 0;
+  border-bottom: 1px solid $color-border;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.announcement-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 0.4rem;
+  font-size: 0.78rem;
+  color: $color-ink-500;
+}
+
+.announcement-category {
+  padding: 0.15rem 0.55rem;
+  border-radius: $radius-pill;
+  background: $color-brand-50;
+  color: $color-brand-700;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.announcement-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  color: $color-ink-900;
+}
+
+.announcement-body {
+  margin: 0;
+  color: $color-ink-600;
+  line-height: 1.65;
+}

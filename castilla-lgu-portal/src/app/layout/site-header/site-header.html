@@ -21,7 +21,12 @@
     </nav>
 
     <div class="header-actions">
-      <button type="button" class="announcements-btn">
+      <a
+        class="announcements-btn"
+        routerLink="/announcements"
+        routerLinkActive="active"
+        (click)="closeMobile()"
+      >
         <span class="announcements-icon">
           <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
             <path
@@ -42,7 +47,7 @@
           </svg>
         </span>
         <span class="announcements-label">Announcements</span>
-      </button>
+      </a>
 
       <button
         type="button"

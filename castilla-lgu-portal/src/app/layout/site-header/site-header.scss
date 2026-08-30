@@ -196,12 +196,16 @@
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
+  // It is an anchor rather than a button now that it routes somewhere, so it
+  // needs the underline removed that the element brings by default.
+  text-decoration: none;
   transition:
     background $ease-fast,
     border-color $ease-fast,
     color $ease-fast;
 
-  &:hover {
+  &:hover,
+  &.active {
     background: $color-bg-subtle;
     border-color: $color-ink-100;
   }

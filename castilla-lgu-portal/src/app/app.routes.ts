@@ -21,8 +21,7 @@ export const routes: Routes = [
   },
   {
     path: 'offices/:slug',
-    loadComponent: () =>
-      import('./pages/office-detail/office-detail').then((m) => m.OfficeDetail),
+    loadComponent: () => import('./pages/office-detail/office-detail').then((m) => m.OfficeDetail),
   },
   {
     path: 'permits',
@@ -30,8 +29,11 @@ export const routes: Routes = [
   },
   {
     path: 'permits/:slug',
-    loadComponent: () =>
-      import('./pages/permit-detail/permit-detail').then((m) => m.PermitDetail),
+    loadComponent: () => import('./pages/permit-detail/permit-detail').then((m) => m.PermitDetail),
+  },
+  {
+    path: 'announcements',
+    loadComponent: () => import('./pages/announcements/announcements').then((m) => m.Announcements),
   },
   {
     path: 'contact',

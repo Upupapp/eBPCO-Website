@@ -1,0 +1,39 @@
+<section class="page-intro">
+  <div class="page-intro-inner">
+    <app-section-heading
+      eyebrow="Announcements"
+      heading="Public notices from LGU Castilla"
+      subtitle="Advisories, public notices, and announcements published by the Municipality of Castilla."
+    />
+
+    @if (announcements().length) {
+      <ul class="announcement-list">
+        @for (item of announcements(); track item.slug) {
+          <li class="announcement">
+            <p class="announcement-meta">
+              <time [attr.datetime]="item.publishedAt">{{
+                item.publishedAt | date: 'longDate'
+              }}</time>
+              @if (item.category) {
+                <span class="announcement-category">{{ item.category }}</span>
+              }
+            </p>
+            <h2 class="announcement-title">{{ item.title }}</h2>
+            <p class="announcement-body">{{ item.body }}</p>
+          </li>
+        }
+      </ul>
+    } @else {
+      <!--
+        Honest empty state rather than sample notices. The same discipline the
+        Vision statement and privacy policy follow: say what is not yet
+        published instead of publishing something plausible.
+      -->
+      <p class="notice">
+        LGU Castilla has not published any announcements here yet. When it does, notices and
+        advisories will appear on this page. In the meantime, the municipal offices listed on this
+        portal can be contacted directly.
+      </p>
+    }
+  </div>
+</section>
