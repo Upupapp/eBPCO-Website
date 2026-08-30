@@ -12,6 +12,16 @@ async function createComponent() {
   return TestBed.createComponent(Offices).componentInstance;
 }
 
+async function createFixture() {
+  await TestBed.configureTestingModule({
+    imports: [Offices],
+    providers: [provideRouter([])],
+  }).compileComponents();
+  const fixture = TestBed.createComponent(Offices);
+  fixture.detectChanges();
+  return fixture;
+}
+
 describe('Offices', () => {
   it('lists every municipal office by default', async () => {
     const component = await createComponent();
@@ -86,5 +96,41 @@ describe('Offices', () => {
     const component = await createComponent();
     component.onSearchInput('zzzznonexistentzzzz');
     expect(component.filteredOffices().length).toBe(0);
+  });
+
+  // Regression guards for F-11. The active filter was conveyed by a CSS class
+  // alone, so a screen-reader user could not tell which filter was on, and
+  // the resulting count was never announced at all.
+  it('states which filter is active via aria-pressed, not only a class', async () => {
+    const fixture = await createFixture();
+    const host = fixture.nativeElement as HTMLElement;
+
+    const buttons = Array.from(host.querySelectorAll('.category-filters button'));
+    expect(buttons.length).toBeGreaterThan(1);
+    for (const b of buttons) expect(b.getAttribute('aria-pressed')).toMatch(/^(true|false)$/);
+
+    expect(buttons.filter((b) => b.getAttribute('aria-pressed') === 'true').length).toBe(1);
+
+    fixture.componentInstance.setCategory('finance');
+    fixture.detectChanges();
+
+    const pressed = Array.from(host.querySelectorAll('.category-filters button')).filter(
+      (b) => b.getAttribute('aria-pressed') === 'true',
+    );
+    expect(pressed.length).toBe(1);
+    expect(pressed[0].textContent?.trim()).toBe('Finance');
+  });
+
+  it('announces the result count through a live region', async () => {
+    const fixture = await createFixture();
+    const host = fixture.nativeElement as HTMLElement;
+
+    const region = host.querySelector('[role="status"]');
+    expect(region).not.toBeNull();
+    expect(region!.textContent).toContain(String(fixture.componentInstance.resultCount()));
+
+    fixture.componentInstance.onSearchInput('zzzznonexistentzzzz');
+    fixture.detectChanges();
+    expect(host.querySelector('[role="status"]')!.textContent).toContain('0 offices found');
   });
 });

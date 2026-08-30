@@ -47,6 +47,32 @@ button {
   outline-offset: 2px;
 }
 
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  // Off-screen rather than display:none, so it stays in the tab order.
+  top: -4rem;
+  z-index: 100;
+  padding: 0.7rem 1.1rem;
+  background: $color-surface;
+  color: $color-brand-700;
+  font-weight: 700;
+  border: 2px solid $color-brand-600;
+  border-radius: 0.4rem;
+  text-decoration: none;
+  transition: top 0.15s ease;
+
+  &:focus {
+    top: 0.5rem;
+  }
+}
+
+// The skip target must not draw a focus ring of its own when it receives
+// programmatic focus — the destination is the point, not the outline.
+#main-content:focus {
+  outline: none;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

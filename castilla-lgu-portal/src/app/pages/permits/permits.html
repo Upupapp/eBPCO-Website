@@ -8,15 +8,24 @@
 
     <p class="disclaimer">
       <app-placeholder-tag label="Content pending LGU confirmation" />
-      These summaries reflect general Philippine LGU, Building Code, and Fire Code practice, condensed for citizens.
-      They have not yet been confirmed against Castilla's own citizen's charter and may change once verified.
+      These summaries reflect general Philippine LGU, Building Code, and Fire Code practice,
+      condensed for citizens. They have not yet been confirmed against Castilla's own citizen's
+      charter and may change once verified.
     </p>
 
     <div class="directory-controls">
       <div class="search-field">
         <svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true">
           <circle cx="9" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6" />
-          <line x1="14" y1="14" x2="18.5" y2="18.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <line
+            x1="14"
+            y1="14"
+            x2="18.5"
+            y2="18.5"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
         </svg>
         <label class="sr-only" for="permit-search">Search permits and services</label>
         <input
@@ -29,15 +38,35 @@
       </div>
 
       <div class="category-filters" role="group" aria-label="Filter permits by issuing office">
-        <button type="button" [class.active]="activeGroup() === 'all'" (click)="setGroup('all')">
+        <button
+          type="button"
+          [class.active]="activeGroup() === 'all'"
+          [attr.aria-pressed]="activeGroup() === 'all'"
+          (click)="setGroup('all')"
+        >
           All Offices
         </button>
         @for (group of groups; track group.id) {
-          <button type="button" [class.active]="activeGroup() === group.id" (click)="setGroup(group.id)">
+          <button
+            type="button"
+            [class.active]="activeGroup() === group.id"
+            [attr.aria-pressed]="activeGroup() === group.id"
+            (click)="setGroup(group.id)"
+          >
             {{ group.label }}
           </button>
         }
       </div>
+
+      <!--
+        resultCount was computed but never rendered, so filtering changed the
+        list with no announcement at all for a screen-reader user. It is the
+        announcement now.
+      -->
+      <p class="sr-only" role="status">
+        {{ resultCount() }}
+        {{ resultCount() === 1 ? 'permit or service' : 'permits and services' }} found
+      </p>
     </div>
   </div>
 </section>
@@ -53,12 +82,16 @@
               <h3 class="permit-name">{{ permit.name }}</h3>
               <p class="permit-desc">{{ permit.description }}</p>
             </div>
-            <span class="permit-link">View Requirements <span aria-hidden="true">&rarr;</span></span>
+            <span class="permit-link"
+              >View Requirements <span aria-hidden="true">&rarr;</span></span
+            >
           </a>
         }
       </div>
     } @empty {
-      <p class="empty-state">No permits or services match your search. Try a different keyword or office.</p>
+      <p class="empty-state">
+        No permits or services match your search. Try a different keyword or office.
+      </p>
     }
   </div>
 </section>

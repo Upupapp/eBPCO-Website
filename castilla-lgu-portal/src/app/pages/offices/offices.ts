@@ -63,6 +63,8 @@ export class Offices {
     });
   });
 
+  readonly resultCount = computed(() => this.filteredOffices().length);
+
   onSearchInput(value: string): void {
     this.searchTerm.set(value);
   }

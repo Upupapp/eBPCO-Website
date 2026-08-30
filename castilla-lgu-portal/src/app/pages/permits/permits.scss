@@ -38,8 +38,15 @@
   color: $color-ink-300;
   transition: box-shadow $ease-base;
 
+  // The soft ring alone was about 1.2:1 against the surface behind it, under
+  // the 3:1 that SC 1.4.11 requires of a focus indicator — and the input
+  // below sets outline:none, which outranks the global :focus-visible rule on
+  // specificity, so this was the only cue a keyboard user got. The border now
+  // changes to a solid $color-brand-600 (5.71:1 on white); the soft ring stays
+  // for shape.
   &:focus-within {
-    box-shadow: 0 0 0 2px $color-brand-focus-ring;
+    border-color: $color-brand-600;
+    box-shadow: 0 0 0 3px $color-brand-focus-ring;
   }
 
   input {

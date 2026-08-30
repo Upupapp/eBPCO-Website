@@ -62,4 +62,40 @@ describe('Permits', () => {
     expect(component.resultCount()).toBe(0);
     expect(component.groupedPermits().length).toBe(0);
   });
+
+  // Regression guards for F-11 on this page. resultCount was computed here
+  // and never rendered, so filtering changed the list with no announcement.
+  it('states which issuing-office filter is active via aria-pressed', () => {
+    const fixture = TestBed.createComponent(Permits);
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+
+    const buttons = Array.from(host.querySelectorAll('.category-filters button'));
+    expect(buttons.length).toBeGreaterThan(1);
+    for (const b of buttons) expect(b.getAttribute('aria-pressed')).toMatch(/^(true|false)$/);
+    expect(buttons.filter((b) => b.getAttribute('aria-pressed') === 'true').length).toBe(1);
+
+    fixture.componentInstance.setGroup('bfp');
+    fixture.detectChanges();
+
+    const pressed = Array.from(host.querySelectorAll('.category-filters button')).filter(
+      (b) => b.getAttribute('aria-pressed') === 'true',
+    );
+    expect(pressed.length).toBe(1);
+    expect(pressed[0].textContent?.trim()).toBe('Bureau of Fire Protection');
+  });
+
+  it('announces the result count through a live region', () => {
+    const fixture = TestBed.createComponent(Permits);
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+
+    const region = host.querySelector('[role="status"]');
+    expect(region).not.toBeNull();
+    expect(region!.textContent).toContain(String(fixture.componentInstance.resultCount()));
+
+    fixture.componentInstance.onSearchInput('zzzznonexistentzzzz');
+    fixture.detectChanges();
+    expect(host.querySelector('[role="status"]')!.textContent).toContain('0 permits and services');
+  });
 });
