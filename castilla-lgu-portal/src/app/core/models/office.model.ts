@@ -20,10 +20,25 @@ export interface OfficeHead {
 }
 
 export interface OfficeContact {
-  telephone: string;
-  email: string;
+  /**
+   * Undefined where the LGU has not confirmed a number, or where one was
+   * published but withheld. Absence is modelled as absence: these were once
+   * the literal string 'Pending confirmation', and the office page decided
+   * what to render by comparing against that string — so rewording the
+   * placeholder would have published "Pending confirmation" as every
+   * unconfirmed office's telephone number.
+   */
+  telephone?: string;
+  email?: string;
+  /** Always known: the seat of government is a matter of record. */
   location: string;
+  /** Always known: the Civil Service Commission's standard LGU schedule. */
   hours: string;
+  /**
+   * True while the record as a whole is unconfirmed with LGU Castilla. It
+   * describes provenance, not what to render — the fields above do that,
+   * by being present or not.
+   */
   isPlaceholder: boolean;
 }
 

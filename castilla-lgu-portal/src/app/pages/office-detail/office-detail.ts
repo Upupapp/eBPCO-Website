@@ -5,10 +5,11 @@ import { map } from 'rxjs';
 import { MUNICIPAL_OFFICES, OFFICE_CATEGORIES } from '../../core/data/offices.data';
 import { OfficeHead } from '../../core/models/office.model';
 import { initialsFromName } from '../../core/util/initials';
+import { NoIndex } from '../../shared/no-index/no-index';
 
 @Component({
   selector: 'app-office-detail',
-  imports: [RouterLink],
+  imports: [RouterLink, NoIndex],
   templateUrl: './office-detail.html',
   styleUrl: './office-detail.scss',
 })

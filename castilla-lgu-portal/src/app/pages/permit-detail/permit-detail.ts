@@ -4,10 +4,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { PERMIT_OFFICE_GROUPS, PUBLIC_PERMIT_TYPES } from '../../core/data/permits.data';
 import { PlaceholderTag } from '../../shared/placeholder-tag/placeholder-tag';
+import { NoIndex } from '../../shared/no-index/no-index';
 
 @Component({
   selector: 'app-permit-detail',
-  imports: [RouterLink, PlaceholderTag],
+  imports: [RouterLink, PlaceholderTag, NoIndex],
   templateUrl: './permit-detail.html',
   styleUrl: './permit-detail.scss',
 })

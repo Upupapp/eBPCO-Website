@@ -43,5 +43,11 @@ export const routes: Routes = [
     path: 'privacy',
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
   },
-  { path: '**', redirectTo: '' },
+  // Not a redirect to '': that answered every mistyped or retired address
+  // with the homepage, so a broken link looked like a working one and a
+  // crawler saw duplicate content at every wrong URL.
+  {
+    path: '**',
+    loadComponent: () => import('./pages/not-found/not-found').then((m) => m.NotFound),
+  },
 ];

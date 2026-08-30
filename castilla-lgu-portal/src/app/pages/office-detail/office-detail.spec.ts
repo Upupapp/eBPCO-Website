@@ -3,8 +3,12 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { of } from 'rxjs';
 import { OfficeDetail } from './office-detail';
 import { MAYOR, VICE_MAYOR } from '../../core/data/officials.data';
+import { MUNICIPAL_OFFICES } from '../../core/data/offices.data';
 
 async function createComponent(slug: string) {
+  // Reset first: these specs create the component more than once per run, and
+  // TestBed refuses to be reconfigured once instantiated.
+  TestBed.resetTestingModule();
   await TestBed.configureTestingModule({
     imports: [OfficeDetail],
     providers: [
@@ -51,5 +55,41 @@ describe('OfficeDetail', () => {
 
     expect(related.length).toBeGreaterThan(0);
     for (const office of related) expect(office.slug).toBeTruthy();
+  });
+
+  // Regression guards for F-07. The template used to decide what to render by
+  // comparing against the literal 'Pending confirmation', so rewording that
+  // placeholder would have published it as every unconfirmed office's
+  // telephone number. Absence is now modelled as absence.
+  it('omits the contact rows an office has no value for', async () => {
+    const withoutPhone = MUNICIPAL_OFFICES.find((o) => !o.contact.telephone)!;
+    expect(withoutPhone).toBeTruthy();
+
+    const fixture = await createComponent(withoutPhone.slug);
+    const labels = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('.contact-list dt'),
+    ).map((el) => el.textContent?.trim());
+
+    expect(labels).not.toContain('Contact Number');
+    expect(labels).toContain('Office Location');
+    expect(labels).toContain('Office Hours');
+  });
+
+  it('renders the contact rows an office does have', async () => {
+    const withPhone = MUNICIPAL_OFFICES.find((o) => o.contact.telephone && o.contact.email)!;
+    const fixture = await createComponent(withPhone.slug);
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(text).toContain(withPhone.contact.telephone!);
+    expect(text).toContain(withPhone.contact.email!);
+  });
+
+  it('never prints a placeholder sentinel at a citizen, on any office', async () => {
+    for (const office of MUNICIPAL_OFFICES) {
+      const fixture = await createComponent(office.slug);
+      const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+      expect(text).not.toContain('Pending confirmation');
+      expect(text).not.toContain('pending confirmation');
+    }
   });
 });

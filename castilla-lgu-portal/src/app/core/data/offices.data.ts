@@ -7,9 +7,8 @@ import {
 import { Official } from '../models/official.model';
 import { MAYOR, VICE_MAYOR } from './officials.data';
 
-// Per-office telephone/email are unverified for most offices — the UI hides
-// those two rows rather than showing "Pending confirmation" text (see
-// office-detail.html). Location and hours are shown plainly: location was
+// Per-office telephone/email are unverified for most offices, so they are
+// simply absent from the record and the office page omits those rows. Location and hours are shown plainly: location was
 // corrected 2026-08-23 (the seat of government is Barangay Cumadcad, not
 // Poblacion — see contact.ts for source notes), and standard Mon–Fri 8–5
 // hours are the Civil Service Commission's default schedule for LGU
@@ -18,8 +17,6 @@ function placeholderContact(
   location = 'Castilla Municipal Hall, 1st Floor, Cumadcad, Castilla, Sorsogon',
 ): OfficeContact {
   return {
-    telephone: 'Pending confirmation',
-    email: 'Pending confirmation',
     location,
     hours: 'Monday–Friday, 8:00 AM–5:00 PM',
     isPlaceholder: true,
@@ -196,7 +193,6 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       // Kept in the Citizen's Charter record but not republished here until
       // LGU Castilla confirms an official mailbox for this office. The
       // office's LGU-issued number above is unaffected.
-      email: 'Pending confirmation',
       location: 'Castilla Municipal Hall, 1st Floor, Cumadcad, Castilla, Sorsogon',
       hours: 'Monday–Friday, 8:00 AM–5:00 PM',
       isPlaceholder: false,
@@ -284,7 +280,6 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       // Kept in the Citizen's Charter record but not republished here until
       // LGU Castilla confirms an official mailbox for this office. The
       // office's LGU-issued number above is unaffected.
-      email: 'Pending confirmation',
       location: 'Castilla Municipal Hall, 2nd Floor, Cumadcad, Castilla, Sorsogon',
       hours: 'Monday–Friday, 8:00 AM–5:00 PM',
       isPlaceholder: false,
@@ -316,7 +311,6 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       // Kept in the Citizen's Charter record but not republished here until
       // LGU Castilla confirms an official mailbox for this office. The
       // office's LGU-issued number above is unaffected.
-      email: 'Pending confirmation',
       location: 'Castilla Municipal Hall, 2nd Floor, Cumadcad, Castilla, Sorsogon',
       hours: 'Monday–Friday, 8:00 AM–5:00 PM (no noon break)',
       isPlaceholder: false,
@@ -454,7 +448,6 @@ export const MUNICIPAL_OFFICES: MunicipalOffice[] = [
       // Kept in the Citizen's Charter record but not republished here until
       // LGU Castilla confirms an official mailbox for this office. The
       // office's LGU-issued number above is unaffected.
-      email: 'Pending confirmation',
       location: 'Castilla Municipal Hall, 2nd Floor, Cumadcad, Castilla, Sorsogon',
       hours: 'Monday–Friday, 8:00 AM–5:00 PM',
       isPlaceholder: false,

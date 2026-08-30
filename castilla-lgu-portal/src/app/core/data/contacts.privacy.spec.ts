@@ -10,7 +10,7 @@ const WITHHELD = [
   'cherokeekessellopez@gmail.com',
 ];
 
-const published = (v: string) => v.trim().length > 0 && v !== 'Pending confirmation';
+const published = (v: string | undefined): v is string => !!v && v.trim().length > 0;
 
 describe('published office contacts', () => {
   it.each(WITHHELD)('does not republish %s', (address) => {

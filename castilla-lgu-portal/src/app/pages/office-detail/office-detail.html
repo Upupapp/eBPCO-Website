@@ -57,13 +57,13 @@
       <aside class="detail-sidebar">
         <h2>Contact Information</h2>
         <dl class="contact-list">
-          @if (o.contact.telephone !== 'Pending confirmation') {
+          @if (o.contact.telephone) {
             <div>
               <dt>Contact Number</dt>
               <dd>{{ o.contact.telephone }}</dd>
             </div>
           }
-          @if (o.contact.email !== 'Pending confirmation') {
+          @if (o.contact.email) {
             <div>
               <dt>Email</dt>
               <dd>{{ o.contact.email }}</dd>
@@ -86,7 +86,7 @@
     </div>
   </section>
 } @else {
-  <section class="not-found">
+  <section class="not-found" appNoIndex>
     <p class="eyebrow">Office not found</p>
     <h1>We couldn't find that office.</h1>
     <a routerLink="/offices">&larr; Back to Municipal Offices</a>
