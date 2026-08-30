@@ -1,0 +1,7 @@
+# The repository root has no build of its own; these are stray artifacts from
+# building the app in castilla-lgu-portal/. A vitest cache file was committed
+# for want of this file.
+node_modules/
+.angular/
+dist/
+.DS_Store

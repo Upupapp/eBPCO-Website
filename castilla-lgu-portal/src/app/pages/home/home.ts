@@ -13,6 +13,7 @@ import { PROVINCE_NAME } from '../../core/data/municipality.data';
 import { PROFILE_FIELDS_SOURCE } from '../../core/data/municipality.token';
 import { ProfileField } from '../../core/models/official.model';
 import { Icon, IconName } from '../../shared/icon/icon';
+import { RevealOnScroll } from '../../shared/reveal-on-scroll/reveal-on-scroll';
 
 interface QuickNavItem {
   title: string;
@@ -40,7 +41,7 @@ const FIELD_ICONS: Record<string, IconName> = {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, DecimalPipe, Icon],
+  imports: [RouterLink, DecimalPipe, Icon, RevealOnScroll],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
@@ -107,7 +108,6 @@ export class Home implements AfterViewInit, OnDestroy {
     return `1.${digits}-${digits}`;
   }
 
-  private revealObserver?: IntersectionObserver;
   private countersObserver?: IntersectionObserver;
   private readonly countRafs = new Set<number>();
   private onScroll?: () => void;
@@ -122,49 +122,16 @@ export class Home implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.setupScrollReveal();
     this.setupCounters();
     this.setupParallax();
   }
 
   ngOnDestroy(): void {
-    this.revealObserver?.disconnect();
     this.countersObserver?.disconnect();
     if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
     if (this.parallaxRaf !== null) cancelAnimationFrame(this.parallaxRaf);
     for (const raf of this.countRafs) cancelAnimationFrame(raf);
     this.countRafs.clear();
-  }
-
-  // Fades/rises each .reveal element in once it scrolls into view, then
-  // stops observing it — a one-time entrance, not a replay-on-every-scroll
-  // gimmick.
-  private setupScrollReveal(): void {
-    const targets = this.host.nativeElement.querySelectorAll<HTMLElement>('.reveal');
-    if (!targets.length) return;
-
-    // Reveal everything at once when the effect can't or shouldn't run.
-    // The IntersectionObserver check is not defensive padding: this method
-    // runs first in ngAfterViewInit, so constructing one unguarded threw
-    // before the counters and parallax were ever set up, blanking the page's
-    // headline numbers rather than merely skipping an animation.
-    if (this.reducedMotion || typeof IntersectionObserver === 'undefined') {
-      targets.forEach((el) => el.classList.add('in-view'));
-      return;
-    }
-
-    this.revealObserver = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-            this.revealObserver?.unobserve(entry.target);
-          }
-        }
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' },
-    );
-    targets.forEach((el) => this.revealObserver!.observe(el));
   }
 
   private setupCounters(): void {

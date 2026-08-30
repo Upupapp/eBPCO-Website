@@ -24,6 +24,9 @@ function formFile(file: string): string {
   return `/assets/permits/${file}`;
 }
 
+/** The one combined checklist the LGU publishes, covering both stages. */
+const BUILDING_AND_OCCUPANCY_CHECKLIST = formFile('Building-Permit-and-Occupancy-Checklist.pdf');
+
 export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
   {
     slug: 'building-permit-new-construction',
@@ -43,8 +46,10 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
       'PRC license and PTR of the engineer/architect of record',
     ],
     validity: '12 months from date of issuance',
-    processNote: 'A Zoning / Locational Clearance is typically secured first and filed as part of this application.',
+    processNote:
+      'A Zoning / Locational Clearance is typically secured first and filed as part of this application.',
     formUrl: formFile('Building-Permit-Unified-Application-Form.pdf'),
+    checklistUrl: BUILDING_AND_OCCUPANCY_CHECKLIST,
     isPlaceholder: true,
   },
   {
@@ -53,7 +58,8 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     officeGroup: 'engineering',
     issuingOfficeSlug: OBO_OFFICE_SLUG,
     issuingOfficeName: OBO_OFFICE_NAME,
-    description: 'Covers renovation or alteration work on an existing building that changes its structure, layout, or utilities.',
+    description:
+      'Covers renovation or alteration work on an existing building that changes its structure, layout, or utilities.',
     requirements: [
       'Renovation/alteration plans',
       'Copy of the original Building Permit, if available',
@@ -62,6 +68,7 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     ],
     validity: '12 months from date of issuance',
     formUrl: formFile('Building-Permit-Unified-Application-Form.pdf'),
+    checklistUrl: BUILDING_AND_OCCUPANCY_CHECKLIST,
     isPlaceholder: true,
   },
   {
@@ -70,7 +77,8 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     officeGroup: 'engineering',
     issuingOfficeSlug: OBO_OFFICE_SLUG,
     issuingOfficeName: OBO_OFFICE_NAME,
-    description: 'Covers adding floor area or extending an existing structure, such as a new floor or wing.',
+    description:
+      'Covers adding floor area or extending an existing structure, such as a new floor or wing.',
     requirements: [
       'Addition/extension plans',
       'Structural analysis covering the added load',
@@ -79,6 +87,7 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     ],
     validity: '12 months from date of issuance',
     formUrl: formFile('Building-Permit-Unified-Application-Form.pdf'),
+    checklistUrl: BUILDING_AND_OCCUPANCY_CHECKLIST,
     isPlaceholder: true,
   },
   {
@@ -169,7 +178,8 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     officeGroup: 'engineering',
     issuingOfficeSlug: OBO_OFFICE_SLUG,
     issuingOfficeName: OBO_OFFICE_NAME,
-    description: 'Covers mechanical systems such as elevators, HVAC, and other mechanical equipment installations.',
+    description:
+      'Covers mechanical systems such as elevators, HVAC, and other mechanical equipment installations.',
     requirements: ['Mechanical plans', 'PRC license and PTR of the mechanical engineer of record'],
     validity: '12 months from date of issuance',
     formUrl: formFile('Mechanical-Permit-Form.pdf'),
@@ -181,7 +191,8 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     officeGroup: 'engineering',
     issuingOfficeSlug: OBO_OFFICE_SLUG,
     issuingOfficeName: OBO_OFFICE_NAME,
-    description: 'Covers sanitary and plumbing systems within a building, such as waste and water lines.',
+    description:
+      'Covers sanitary and plumbing systems within a building, such as waste and water lines.',
     requirements: [
       'Sanitary/plumbing plans',
       'PRC license and PTR of the sanitary engineer or master plumber of record',
@@ -208,7 +219,8 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     officeGroup: 'engineering',
     issuingOfficeSlug: OBO_OFFICE_SLUG,
     issuingOfficeName: OBO_OFFICE_NAME,
-    description: 'Covers electronics and communications wiring/equipment installed within a building.',
+    description:
+      'Covers electronics and communications wiring/equipment installed within a building.',
     requirements: [
       'Electronics/communications layout plans',
       'PRC license and PTR of the electronics engineer of record',
@@ -224,7 +236,10 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     issuingOfficeSlug: OBO_OFFICE_SLUG,
     issuingOfficeName: OBO_OFFICE_NAME,
     description: 'Covers interior design and fit-out work within a building.',
-    requirements: ['Interior design layout plans', 'PRC license and PTR of the interior designer of record'],
+    requirements: [
+      'Interior design layout plans',
+      'PRC license and PTR of the interior designer of record',
+    ],
     validity: '12 months from date of issuance',
     isPlaceholder: true,
   },
@@ -246,7 +261,8 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     officeGroup: 'engineering',
     issuingOfficeSlug: OBO_OFFICE_SLUG,
     issuingOfficeName: OBO_OFFICE_NAME,
-    description: 'Required for billboards, signages, and similar structures, especially elevated or free-standing signs.',
+    description:
+      'Required for billboards, signages, and similar structures, especially elevated or free-standing signs.',
     requirements: [
       'Sign design and structural detail',
       'PRC license and PTR of the engineer of record, if the sign is elevated or structural',
@@ -299,14 +315,17 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
     officeGroup: 'engineering',
     issuingOfficeSlug: OBO_OFFICE_SLUG,
     issuingOfficeName: OBO_OFFICE_NAME,
-    description: 'Certifies that a completed building may be legally occupied or used, issued after final inspection.',
+    description:
+      'Certifies that a completed building may be legally occupied or used, issued after final inspection.',
     requirements: [
       'As-built plans',
       'Certificate of completion',
       'Final Fire Safety Inspection Certificate',
       'Certificate of final electrical inspection',
     ],
-    validity: 'No fixed expiry — valid for the life of the structure unless its use, occupancy, or ownership changes',
+    validity:
+      'No fixed expiry — valid for the life of the structure unless its use, occupancy, or ownership changes',
+    checklistUrl: BUILDING_AND_OCCUPANCY_CHECKLIST,
     isPlaceholder: true,
   },
   {
@@ -325,8 +344,10 @@ export const PUBLIC_PERMIT_TYPES: PublicPermitType[] = [
       'As-built plan, if necessary',
       'Fire Safety Compliance and Commissioning Report (FSCCR), one (1) set, if necessary',
     ],
-    validity: 'Required once, as a prerequisite to occupancy; re-inspection may be required if occupancy or use later changes',
-    processNote: 'A statutory prerequisite to occupancy, issued after the FSEC and after construction is complete.',
+    validity:
+      'Required once, as a prerequisite to occupancy; re-inspection may be required if occupancy or use later changes',
+    processNote:
+      'A statutory prerequisite to occupancy, issued after the FSEC and after construction is complete.',
     formUrl: formFile('FSIC-for-Occupancy-Permit-BFP.pdf'),
     isPlaceholder: true,
   },

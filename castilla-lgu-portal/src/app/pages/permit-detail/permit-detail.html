@@ -30,6 +30,16 @@
           </section>
         }
 
+        @if (p.checklistUrl) {
+          <section class="detail-block">
+            <h2>Requirements Checklist</h2>
+            <a class="form-download-link" [href]="p.checklistUrl" target="_blank" rel="noopener">
+              Download the Building Permit &amp; Occupancy Checklist (PDF)
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </section>
+        }
+
         @if (p.formUrl) {
           <section class="detail-block">
             <h2>Application Form</h2>
@@ -52,8 +62,8 @@
         } @else {
           <p class="office-name">{{ p.issuingOfficeName }}</p>
           <p class="office-note">
-            The Bureau of Fire Protection is a national agency and does not yet have its own page in this
-            municipal office directory.
+            The Bureau of Fire Protection is a national agency and does not yet have its own page in
+            this municipal office directory.
           </p>
         }
 

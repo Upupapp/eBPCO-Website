@@ -45,7 +45,9 @@
     color: $color-ink-700;
 
     &::placeholder {
-      color: $color-ink-100;
+      // ink-100 measured 2.68:1 against the field behind it, under even the
+      // 3:1 floor. ink-400 is 4.94:1 and still reads as secondary.
+      color: $color-ink-400;
     }
   }
 }

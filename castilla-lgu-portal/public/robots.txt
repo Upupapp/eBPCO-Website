@@ -1,0 +1,6 @@
+# Municipality of Castilla LGU information portal.
+# Public information, intended to be indexed.
+User-agent: *
+Allow: /
+
+Sitemap: https://castilla-ebpco.online/sitemap.xml

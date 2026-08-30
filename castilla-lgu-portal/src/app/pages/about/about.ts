@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, inject } from '@angular/core';
+import { Component } from '@angular/core';
+import { RevealOnScroll } from '../../shared/reveal-on-scroll/reveal-on-scroll';
 import { ReadMore } from '../../shared/read-more/read-more';
 import { Seal } from '../../shared/seal/seal';
 import { Icon } from '../../shared/icon/icon';
@@ -18,60 +19,13 @@ import {
 // bring the card back once the full statement is confirmed.
 @Component({
   selector: 'app-about',
-  imports: [ReadMore, Seal, Icon],
+  imports: [ReadMore, Seal, Icon, RevealOnScroll],
   templateUrl: './about.html',
   styleUrl: './about.scss',
 })
-export class About implements AfterViewInit, OnDestroy {
-  private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
-
+export class About {
   readonly overview = ABOUT_OVERVIEW;
   readonly history = HISTORY_TEXT;
   readonly mission = MISSION_TEXT;
   readonly sealDescription = SEAL_DESCRIPTION;
-
-  private revealObserver?: IntersectionObserver;
-  private readonly reducedMotion =
-    typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  ngAfterViewInit(): void {
-    this.setupScrollReveal();
-  }
-
-  ngOnDestroy(): void {
-    this.revealObserver?.disconnect();
-  }
-
-  // Same one-time fade/rise-into-view pattern used on the home page: each
-  // .reveal element is observed until it intersects, then unobserved so it
-  // never replays on subsequent scrolls.
-  private setupScrollReveal(): void {
-    const targets = this.host.nativeElement.querySelectorAll<HTMLElement>('.reveal');
-    if (!targets.length) return;
-
-    // Reveal everything at once when the effect can't or shouldn't run.
-    // The IntersectionObserver check is not defensive padding: this method
-    // runs first in ngAfterViewInit, so constructing one unguarded threw
-    // before the counters and parallax were ever set up, blanking the page's
-    // headline numbers rather than merely skipping an animation.
-    if (this.reducedMotion || typeof IntersectionObserver === 'undefined') {
-      targets.forEach((el) => el.classList.add('in-view'));
-      return;
-    }
-
-    this.revealObserver = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-            this.revealObserver?.unobserve(entry.target);
-          }
-        }
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' },
-    );
-    targets.forEach((el) => this.revealObserver!.observe(el));
-  }
 }

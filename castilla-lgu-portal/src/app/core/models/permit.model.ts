@@ -50,4 +50,13 @@ export interface PublicPermitType {
    * discipline used for office heads/contacts in offices.data.ts.
    */
   isPlaceholder: boolean;
+  /**
+   * Public URL of the LGU's combined requirements checklist, where one covers
+   * this permit. Only one such document exists — the file the LGU itself
+   * titles "Checklist (Building Permit & Occupancy)" — so it is attached to
+   * the building permits and the Certificate of Occupancy on the strength of
+   * that title and nothing more. It shipped in the build referenced by no
+   * permit at all until this was added.
+   */
+  checklistUrl?: string;
 }
