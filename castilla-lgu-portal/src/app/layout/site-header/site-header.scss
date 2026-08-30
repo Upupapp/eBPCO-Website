@@ -112,7 +112,15 @@
   gap: 0.7rem;
   text-decoration: none;
   min-width: 0;
-  justify-self: start;
+  // Not `justify-self: start`. That sized this to its own content instead of
+  // to its grid track, so min-width:0 above never applied and the brand
+  // rendered at full width straight over the nav in the band between 1180px
+  // and roughly 1300px — the same overflow the 1180px breakpoint below
+  // already describes, which was only ever fixed for the hidden-nav case.
+  // Stretching lets the track govern, so the title ellipsis is what gives
+  // way rather than the layout.
+  justify-self: stretch;
+  overflow: hidden;
 }
 
 .brand-text {
@@ -239,6 +247,26 @@
 
 .mobile-nav {
   display: none;
+}
+
+// Between the widest layout and the hamburger breakpoint the six nav links
+// plus the brand and the Announcements button genuinely do not fit at full
+// spacing. Tighten the nav here rather than let the brand truncate: measured
+// on the live site, 1366px was comfortable, 1280px touched, and 1200px
+// overlapped outright.
+@media (max-width: 1400px) and (min-width: 1181px) {
+  .primary-nav {
+    gap: 0.1rem;
+
+    a {
+      padding: 0.5rem 0.6rem;
+    }
+  }
+
+  .header-main {
+    padding-inline: 1.5rem;
+    gap: 1rem;
+  }
 }
 
 @media (max-width: 1180px) {
