@@ -41,9 +41,17 @@
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.75rem;
+  // Row gap moved onto the links themselves as padding: at 0.86rem these
+  // rendered 17px tall, under the 24px floor WCAG 2.5.8 sets for a touch
+  // target, which on a phone means a footer of seven links you have to aim
+  // at. The padding does the separating now, so the row gap goes.
+  gap: 0 1.75rem;
 
   a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.45rem 0;
     font-size: 0.86rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.72);
